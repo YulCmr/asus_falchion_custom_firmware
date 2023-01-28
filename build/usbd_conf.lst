@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccKF9RBu.s 			page 1
+ARM GAS  /tmp/ccyWFCf1.s 			page 1
 
 
    1              		.cpu cortex-m33
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
   27:USB_Device/Target/usbd_conf.c **** #include "usbd_hid.h"
   28:USB_Device/Target/usbd_conf.c **** 
   29:USB_Device/Target/usbd_conf.c **** /* USER CODE BEGIN Includes */
-ARM GAS  /tmp/ccKF9RBu.s 			page 2
+ARM GAS  /tmp/ccyWFCf1.s 			page 2
 
 
   30:USB_Device/Target/usbd_conf.c **** 
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
   84:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1M = 4;
   85:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1N = 12;
   86:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
-ARM GAS  /tmp/ccKF9RBu.s 			page 3
+ARM GAS  /tmp/ccyWFCf1.s 			page 3
 
 
   87:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1Q = RCC_PLLQ_DIV2;
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  141:USB_Device/Target/usbd_conf.c ****   }
  142:USB_Device/Target/usbd_conf.c **** }
  143:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 4
+ARM GAS  /tmp/ccyWFCf1.s 			page 4
 
 
  144:USB_Device/Target/usbd_conf.c **** /**
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  198:USB_Device/Target/usbd_conf.c **** 
  199:USB_Device/Target/usbd_conf.c ****   /* USER CODE END HAL_PCD_DataInStageCallback_PreTreatment */
  200:USB_Device/Target/usbd_conf.c ****   USBD_LL_DataInStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->IN_ep[epnum].xfer_buff);
-ARM GAS  /tmp/ccKF9RBu.s 			page 5
+ARM GAS  /tmp/ccyWFCf1.s 			page 5
 
 
  201:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN HAL_PCD_DataInStageCallback_PostTreatment  */
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  255:USB_Device/Target/usbd_conf.c **** 
  256:USB_Device/Target/usbd_conf.c **** /**
  257:USB_Device/Target/usbd_conf.c ****   * @brief  Suspend callback.
-ARM GAS  /tmp/ccKF9RBu.s 			page 6
+ARM GAS  /tmp/ccyWFCf1.s 			page 6
 
 
  258:USB_Device/Target/usbd_conf.c ****   * When Low power mode is enabled the debug cannot be used (IAR, Keil doesn't support it)
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  312:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN HAL_PCD_ResumeCallback_PostTreatment */
  313:USB_Device/Target/usbd_conf.c **** 
  314:USB_Device/Target/usbd_conf.c ****   /* USER CODE END HAL_PCD_ResumeCallback_PostTreatment */
-ARM GAS  /tmp/ccKF9RBu.s 			page 7
+ARM GAS  /tmp/ccyWFCf1.s 			page 7
 
 
  315:USB_Device/Target/usbd_conf.c **** }
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  369:USB_Device/Target/usbd_conf.c **** {
  370:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN HAL_PCD_ConnectCallback_PreTreatment */
  371:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 8
+ARM GAS  /tmp/ccyWFCf1.s 			page 8
 
 
  372:USB_Device/Target/usbd_conf.c ****   /* USER CODE END HAL_PCD_ConnectCallback_PreTreatment */
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  426:USB_Device/Target/usbd_conf.c ****   hpcd_USB_FS.Init.low_power_enable = DISABLE;
  427:USB_Device/Target/usbd_conf.c ****   hpcd_USB_FS.Init.lpm_enable = DISABLE;
  428:USB_Device/Target/usbd_conf.c ****   hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
-ARM GAS  /tmp/ccKF9RBu.s 			page 9
+ARM GAS  /tmp/ccyWFCf1.s 			page 9
 
 
  429:USB_Device/Target/usbd_conf.c ****   if (HAL_PCD_Init(&hpcd_USB_FS) != HAL_OK)
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  483:USB_Device/Target/usbd_conf.c ****   * @param  pdev: Device handle
  484:USB_Device/Target/usbd_conf.c ****   * @retval USBD status
  485:USB_Device/Target/usbd_conf.c ****   */
-ARM GAS  /tmp/ccKF9RBu.s 			page 10
+ARM GAS  /tmp/ccyWFCf1.s 			page 10
 
 
  486:USB_Device/Target/usbd_conf.c **** USBD_StatusTypeDef USBD_LL_Start(USBD_HandleTypeDef *pdev)
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  540:USB_Device/Target/usbd_conf.c ****   */
  541:USB_Device/Target/usbd_conf.c **** USBD_StatusTypeDef USBD_LL_CloseEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
  542:USB_Device/Target/usbd_conf.c **** {
-ARM GAS  /tmp/ccKF9RBu.s 			page 11
+ARM GAS  /tmp/ccyWFCf1.s 			page 11
 
 
  543:USB_Device/Target/usbd_conf.c ****   HAL_StatusTypeDef hal_status = HAL_OK;
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  597:USB_Device/Target/usbd_conf.c ****   HAL_StatusTypeDef hal_status = HAL_OK;
  598:USB_Device/Target/usbd_conf.c ****   USBD_StatusTypeDef usb_status = USBD_OK;
  599:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 12
+ARM GAS  /tmp/ccyWFCf1.s 			page 12
 
 
  600:USB_Device/Target/usbd_conf.c ****   hal_status = HAL_PCD_EP_ClrStall(pdev->pData, ep_addr);
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  654:USB_Device/Target/usbd_conf.c **** {
  655:USB_Device/Target/usbd_conf.c ****   HAL_StatusTypeDef hal_status = HAL_OK;
  656:USB_Device/Target/usbd_conf.c ****   USBD_StatusTypeDef usb_status = USBD_OK;
-ARM GAS  /tmp/ccKF9RBu.s 			page 13
+ARM GAS  /tmp/ccyWFCf1.s 			page 13
 
 
  657:USB_Device/Target/usbd_conf.c **** 
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  711:USB_Device/Target/usbd_conf.c **** void *USBD_static_malloc(uint32_t size)
  712:USB_Device/Target/usbd_conf.c **** {
  713:USB_Device/Target/usbd_conf.c ****   UNUSED(size);
-ARM GAS  /tmp/ccKF9RBu.s 			page 14
+ARM GAS  /tmp/ccyWFCf1.s 			page 14
 
 
  714:USB_Device/Target/usbd_conf.c ****   static uint32_t mem[(sizeof(USBD_HID_HandleTypeDef)/4)+1];/* On 32-bit boundary */
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  751:USB_Device/Target/usbd_conf.c ****     case HAL_OK :
  752:USB_Device/Target/usbd_conf.c ****       usb_status = USBD_OK;
  753:USB_Device/Target/usbd_conf.c ****     break;
-ARM GAS  /tmp/ccKF9RBu.s 			page 15
+ARM GAS  /tmp/ccyWFCf1.s 			page 15
 
 
  754:USB_Device/Target/usbd_conf.c ****     case HAL_ERROR :
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
   84              		.loc 1 736 3 view .LVU11
   85 0002 FFF7FEFF 		bl	SystemClock_Config
   86              	.LVL5:
-ARM GAS  /tmp/ccKF9RBu.s 			page 16
+ARM GAS  /tmp/ccyWFCf1.s 			page 16
 
 
  737:USB_Device/Target/usbd_conf.c **** /* USER CODE END 5 */
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
   73:USB_Device/Target/usbd_conf.c ****   {
  134              		.loc 1 73 15 is_stmt 0 view .LVU21
  135 001a 2268     		ldr	r2, [r4]
-ARM GAS  /tmp/ccKF9RBu.s 			page 17
+ARM GAS  /tmp/ccyWFCf1.s 			page 17
 
 
   73:USB_Device/Target/usbd_conf.c ****   {
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  176 0040 0693     		str	r3, [sp, #24]
   87:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1R = RCC_PLLR_DIV2;
  177              		.loc 1 87 5 is_stmt 1 view .LVU36
-ARM GAS  /tmp/ccKF9RBu.s 			page 18
+ARM GAS  /tmp/ccyWFCf1.s 			page 18
 
 
   87:USB_Device/Target/usbd_conf.c ****     PeriphClkInit.PLLSAI1.PLLSAI1R = RCC_PLLR_DIV2;
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  215              		.loc 1 100 25 is_stmt 0 view .LVU53
  216 006a 4FF4C053 		mov	r3, #6144
  217 006e 2793     		str	r3, [sp, #156]
-ARM GAS  /tmp/ccKF9RBu.s 			page 19
+ARM GAS  /tmp/ccyWFCf1.s 			page 19
 
 
  101:USB_Device/Target/usbd_conf.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  256 009c 4920     		movs	r0, #73
  257 009e FFF7FEFF 		bl	HAL_NVIC_SetPriority
  258              	.LVL14:
-ARM GAS  /tmp/ccKF9RBu.s 			page 20
+ARM GAS  /tmp/ccyWFCf1.s 			page 20
 
 
  112:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN USB_MspInit 1 */
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  307              	.LVL19:
  308              	.L18:
  142:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 21
+ARM GAS  /tmp/ccyWFCf1.s 			page 21
 
 
  309              		.loc 1 142 1 view .LVU78
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  357              	.LCFI6:
  358              		.cfi_def_cfa_offset 8
  359              		.cfi_offset 3, -8
-ARM GAS  /tmp/ccKF9RBu.s 			page 22
+ARM GAS  /tmp/ccyWFCf1.s 			page 22
 
 
  360              		.cfi_offset 14, -4
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  409              		.global	HAL_PCD_DataInStageCallback
  410              		.syntax unified
  411              		.thumb
-ARM GAS  /tmp/ccKF9RBu.s 			page 23
+ARM GAS  /tmp/ccyWFCf1.s 			page 23
 
 
  412              		.thumb_func
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  461              		.loc 1 220 3 is_stmt 1 view .LVU102
  462 0002 D0F8F002 		ldr	r0, [r0, #752]
  463              	.LVL34:
-ARM GAS  /tmp/ccKF9RBu.s 			page 24
+ARM GAS  /tmp/ccyWFCf1.s 			page 24
 
 
  220:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN HAL_PCD_SOFCallback_PostTreatment */
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  510 0018 FFF7FEFF 		bl	USBD_LL_Reset
  511              	.LVL40:
  254:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 25
+ARM GAS  /tmp/ccyWFCf1.s 			page 25
 
 
  512              		.loc 1 254 1 is_stmt 0 view .LVU113
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  557              		.loc 1 278 8 is_stmt 0 view .LVU124
  558 0010 024A     		ldr	r2, .L39
  559 0012 1369     		ldr	r3, [r2, #16]
-ARM GAS  /tmp/ccKF9RBu.s 			page 26
+ARM GAS  /tmp/ccyWFCf1.s 			page 26
 
 
  278:USB_Device/Target/usbd_conf.c ****   }
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  315:USB_Device/Target/usbd_conf.c **** 
  607              		.loc 1 315 1 is_stmt 0 view .LVU134
  608 0010 10BD     		pop	{r4, pc}
-ARM GAS  /tmp/ccKF9RBu.s 			page 27
+ARM GAS  /tmp/ccyWFCf1.s 			page 27
 
 
  609              	.LVL50:
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  336:USB_Device/Target/usbd_conf.c **** 
  656              		.loc 1 336 1 view .LVU144
  657 000a 08BD     		pop	{r3, pc}
-ARM GAS  /tmp/ccKF9RBu.s 			page 28
+ARM GAS  /tmp/ccyWFCf1.s 			page 28
 
 
  658              		.cfi_endproc
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  709              		.cfi_def_cfa_offset 8
  710              		.cfi_offset 3, -8
  711              		.cfi_offset 14, -4
-ARM GAS  /tmp/ccKF9RBu.s 			page 29
+ARM GAS  /tmp/ccyWFCf1.s 			page 29
 
 
  373:USB_Device/Target/usbd_conf.c ****   /* USER CODE BEGIN HAL_PCD_ConnectCallback_PostTreatment */
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  762              	.LVL64:
  763              	.LFB169:
  413:USB_Device/Target/usbd_conf.c ****   /* Init USB Ip. */
-ARM GAS  /tmp/ccKF9RBu.s 			page 30
+ARM GAS  /tmp/ccyWFCf1.s 			page 30
 
 
  764              		.loc 1 413 1 is_stmt 1 view -0
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  425:USB_Device/Target/usbd_conf.c ****   hpcd_USB_FS.Init.low_power_enable = DISABLE;
  803              		.loc 1 425 31 is_stmt 0 view .LVU176
  804 0020 0023     		movs	r3, #0
-ARM GAS  /tmp/ccKF9RBu.s 			page 31
+ARM GAS  /tmp/ccyWFCf1.s 			page 31
 
 
  805 0022 6361     		str	r3, [r4, #20]
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  845              		.loc 1 462 1 is_stmt 0 view .LVU190
  846 005e 0020     		movs	r0, #0
  847 0060 38BD     		pop	{r3, r4, r5, pc}
-ARM GAS  /tmp/ccKF9RBu.s 			page 32
+ARM GAS  /tmp/ccyWFCf1.s 			page 32
 
 
  848              	.LVL70:
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  894 000a FFF7FEFF 		bl	USBD_Get_USB_Status
  895              	.LVL76:
  478:USB_Device/Target/usbd_conf.c **** }
-ARM GAS  /tmp/ccKF9RBu.s 			page 33
+ARM GAS  /tmp/ccyWFCf1.s 			page 33
 
 
  896              		.loc 1 478 3 is_stmt 1 view .LVU201
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  940              	.LFE171:
  942              		.section	.text.USBD_LL_Stop,"ax",%progbits
  943              		.align	1
-ARM GAS  /tmp/ccKF9RBu.s 			page 34
+ARM GAS  /tmp/ccyWFCf1.s 			page 34
 
 
  944              		.global	USBD_LL_Stop
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  990              	.LVL87:
  991              	.LFB173:
  524:USB_Device/Target/usbd_conf.c ****   HAL_StatusTypeDef hal_status = HAL_OK;
-ARM GAS  /tmp/ccKF9RBu.s 			page 35
+ARM GAS  /tmp/ccyWFCf1.s 			page 35
 
 
  992              		.loc 1 524 1 is_stmt 1 view -0
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  542:USB_Device/Target/usbd_conf.c ****   HAL_StatusTypeDef hal_status = HAL_OK;
  1037              		.loc 1 542 1 is_stmt 1 view -0
  1038              		.cfi_startproc
-ARM GAS  /tmp/ccKF9RBu.s 			page 36
+ARM GAS  /tmp/ccyWFCf1.s 			page 36
 
 
  1039              		@ args = 0, pretend = 0, frame = 0
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1083              	.LCFI23:
  1084              		.cfi_def_cfa_offset 8
  1085              		.cfi_offset 3, -8
-ARM GAS  /tmp/ccKF9RBu.s 			page 37
+ARM GAS  /tmp/ccyWFCf1.s 			page 37
 
 
  1086              		.cfi_offset 14, -4
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1129              		.loc 1 580 3 view .LVU262
  582:USB_Device/Target/usbd_conf.c **** 
  1130              		.loc 1 582 3 view .LVU263
-ARM GAS  /tmp/ccKF9RBu.s 			page 38
+ARM GAS  /tmp/ccyWFCf1.s 			page 38
 
 
  582:USB_Device/Target/usbd_conf.c **** 
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1174              		.loc 1 600 16 view .LVU276
  1175 0006 FFF7FEFF 		bl	HAL_PCD_EP_ClrStall
  1176              	.LVL111:
-ARM GAS  /tmp/ccKF9RBu.s 			page 39
+ARM GAS  /tmp/ccyWFCf1.s 			page 39
 
 
  602:USB_Device/Target/usbd_conf.c **** 
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1220              	.LVL117:
  625:USB_Device/Target/usbd_conf.c **** 
  1221              		.loc 1 625 1 view .LVU290
-ARM GAS  /tmp/ccKF9RBu.s 			page 40
+ARM GAS  /tmp/ccyWFCf1.s 			page 40
 
 
  1222 001a 7047     		bx	lr
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1267 0002 D0F8C802 		ldr	r0, [r0, #712]
  1268              	.LVL124:
  638:USB_Device/Target/usbd_conf.c **** 
-ARM GAS  /tmp/ccKF9RBu.s 			page 41
+ARM GAS  /tmp/ccyWFCf1.s 			page 41
 
 
  1269              		.loc 1 638 16 view .LVU302
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  660:USB_Device/Target/usbd_conf.c **** 
  1313              		.loc 1 660 17 is_stmt 0 view .LVU315
  1314 000a FFF7FEFF 		bl	USBD_Get_USB_Status
-ARM GAS  /tmp/ccKF9RBu.s 			page 42
+ARM GAS  /tmp/ccyWFCf1.s 			page 42
 
 
  1315              	.LVL131:
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1358 000e 08BD     		pop	{r3, pc}
  1359              		.cfi_endproc
  1360              	.LFE181:
-ARM GAS  /tmp/ccKF9RBu.s 			page 43
+ARM GAS  /tmp/ccyWFCf1.s 			page 43
 
 
  1362              		.section	.text.USBD_LL_GetRxDataSize,"ax",%progbits
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1411              		.cfi_def_cfa_offset 8
  1412              		.cfi_offset 3, -8
  1413              		.cfi_offset 14, -4
-ARM GAS  /tmp/ccKF9RBu.s 			page 44
+ARM GAS  /tmp/ccyWFCf1.s 			page 44
 
 
  703:USB_Device/Target/usbd_conf.c **** }
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1463              		.cfi_startproc
  1464              		@ args = 0, pretend = 0, frame = 0
  1465              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccKF9RBu.s 			page 45
+ARM GAS  /tmp/ccyWFCf1.s 			page 45
 
 
  1466              		@ link register save eliminated.
@@ -2685,90 +2685,90 @@ ARM GAS  /tmp/ccKF9RBu.s 			page 1
  1502              		.file 16 "Drivers/STM32L5xx_HAL_Driver/Inc/stm32l5xx_hal.h"
  1503              		.file 17 "Drivers/STM32L5xx_HAL_Driver/Inc/stm32l5xx_hal_cortex.h"
  1504              		.file 18 "<built-in>"
-ARM GAS  /tmp/ccKF9RBu.s 			page 46
+ARM GAS  /tmp/ccyWFCf1.s 			page 46
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 usbd_conf.c
-     /tmp/ccKF9RBu.s:22     .text.USBD_Get_USB_Status:0000000000000000 $t
-     /tmp/ccKF9RBu.s:27     .text.USBD_Get_USB_Status:0000000000000000 USBD_Get_USB_Status
-     /tmp/ccKF9RBu.s:41     .text.USBD_Get_USB_Status:0000000000000008 $d
-     /tmp/ccKF9RBu.s:45     .text.USBD_Get_USB_Status:000000000000000c $t
-     /tmp/ccKF9RBu.s:68     .text.SystemClockConfig_Resume:0000000000000000 $t
-     /tmp/ccKF9RBu.s:73     .text.SystemClockConfig_Resume:0000000000000000 SystemClockConfig_Resume
-     /tmp/ccKF9RBu.s:93     .text.HAL_PCD_MspInit:0000000000000000 $t
-     /tmp/ccKF9RBu.s:99     .text.HAL_PCD_MspInit:0000000000000000 HAL_PCD_MspInit
-     /tmp/ccKF9RBu.s:274    .text.HAL_PCD_MspInit:00000000000000b0 $d
-     /tmp/ccKF9RBu.s:281    .text.HAL_PCD_MspDeInit:0000000000000000 $t
-     /tmp/ccKF9RBu.s:287    .text.HAL_PCD_MspDeInit:0000000000000000 HAL_PCD_MspDeInit
-     /tmp/ccKF9RBu.s:335    .text.HAL_PCD_MspDeInit:0000000000000028 $d
-     /tmp/ccKF9RBu.s:342    .text.HAL_PCD_SetupStageCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:348    .text.HAL_PCD_SetupStageCallback:0000000000000000 HAL_PCD_SetupStageCallback
-     /tmp/ccKF9RBu.s:374    .text.HAL_PCD_DataOutStageCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:380    .text.HAL_PCD_DataOutStageCallback:0000000000000000 HAL_PCD_DataOutStageCallback
-     /tmp/ccKF9RBu.s:408    .text.HAL_PCD_DataInStageCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:414    .text.HAL_PCD_DataInStageCallback:0000000000000000 HAL_PCD_DataInStageCallback
-     /tmp/ccKF9RBu.s:442    .text.HAL_PCD_SOFCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:448    .text.HAL_PCD_SOFCallback:0000000000000000 HAL_PCD_SOFCallback
-     /tmp/ccKF9RBu.s:473    .text.HAL_PCD_ResetCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:479    .text.HAL_PCD_ResetCallback:0000000000000000 HAL_PCD_ResetCallback
-     /tmp/ccKF9RBu.s:525    .text.HAL_PCD_SuspendCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:531    .text.HAL_PCD_SuspendCallback:0000000000000000 HAL_PCD_SuspendCallback
-     /tmp/ccKF9RBu.s:571    .text.HAL_PCD_SuspendCallback:000000000000001c $d
-     /tmp/ccKF9RBu.s:576    .text.HAL_PCD_ResumeCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:582    .text.HAL_PCD_ResumeCallback:0000000000000000 HAL_PCD_ResumeCallback
-     /tmp/ccKF9RBu.s:626    .text.HAL_PCD_ResumeCallback:0000000000000024 $d
-     /tmp/ccKF9RBu.s:631    .text.HAL_PCD_ISOOUTIncompleteCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:637    .text.HAL_PCD_ISOOUTIncompleteCallback:0000000000000000 HAL_PCD_ISOOUTIncompleteCallback
-     /tmp/ccKF9RBu.s:662    .text.HAL_PCD_ISOINIncompleteCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:668    .text.HAL_PCD_ISOINIncompleteCallback:0000000000000000 HAL_PCD_ISOINIncompleteCallback
-     /tmp/ccKF9RBu.s:693    .text.HAL_PCD_ConnectCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:699    .text.HAL_PCD_ConnectCallback:0000000000000000 HAL_PCD_ConnectCallback
-     /tmp/ccKF9RBu.s:724    .text.HAL_PCD_DisconnectCallback:0000000000000000 $t
-     /tmp/ccKF9RBu.s:730    .text.HAL_PCD_DisconnectCallback:0000000000000000 HAL_PCD_DisconnectCallback
-     /tmp/ccKF9RBu.s:755    .text.USBD_LL_Init:0000000000000000 $t
-     /tmp/ccKF9RBu.s:761    .text.USBD_LL_Init:0000000000000000 USBD_LL_Init
-     /tmp/ccKF9RBu.s:857    .text.USBD_LL_Init:0000000000000068 $d
-     /tmp/ccKF9RBu.s:1484   .bss.hpcd_USB_FS:0000000000000000 hpcd_USB_FS
-     /tmp/ccKF9RBu.s:863    .text.USBD_LL_DeInit:0000000000000000 $t
-     /tmp/ccKF9RBu.s:869    .text.USBD_LL_DeInit:0000000000000000 USBD_LL_DeInit
-     /tmp/ccKF9RBu.s:903    .text.USBD_LL_Start:0000000000000000 $t
-     /tmp/ccKF9RBu.s:909    .text.USBD_LL_Start:0000000000000000 USBD_LL_Start
-     /tmp/ccKF9RBu.s:943    .text.USBD_LL_Stop:0000000000000000 $t
-     /tmp/ccKF9RBu.s:949    .text.USBD_LL_Stop:0000000000000000 USBD_LL_Stop
-     /tmp/ccKF9RBu.s:983    .text.USBD_LL_OpenEP:0000000000000000 $t
-     /tmp/ccKF9RBu.s:989    .text.USBD_LL_OpenEP:0000000000000000 USBD_LL_OpenEP
-     /tmp/ccKF9RBu.s:1028   .text.USBD_LL_CloseEP:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1034   .text.USBD_LL_CloseEP:0000000000000000 USBD_LL_CloseEP
-     /tmp/ccKF9RBu.s:1068   .text.USBD_LL_FlushEP:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1074   .text.USBD_LL_FlushEP:0000000000000000 USBD_LL_FlushEP
-     /tmp/ccKF9RBu.s:1108   .text.USBD_LL_StallEP:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1114   .text.USBD_LL_StallEP:0000000000000000 USBD_LL_StallEP
-     /tmp/ccKF9RBu.s:1148   .text.USBD_LL_ClearStallEP:0000000000000000 $t
-ARM GAS  /tmp/ccKF9RBu.s 			page 47
+     /tmp/ccyWFCf1.s:22     .text.USBD_Get_USB_Status:0000000000000000 $t
+     /tmp/ccyWFCf1.s:27     .text.USBD_Get_USB_Status:0000000000000000 USBD_Get_USB_Status
+     /tmp/ccyWFCf1.s:41     .text.USBD_Get_USB_Status:0000000000000008 $d
+     /tmp/ccyWFCf1.s:45     .text.USBD_Get_USB_Status:000000000000000c $t
+     /tmp/ccyWFCf1.s:68     .text.SystemClockConfig_Resume:0000000000000000 $t
+     /tmp/ccyWFCf1.s:73     .text.SystemClockConfig_Resume:0000000000000000 SystemClockConfig_Resume
+     /tmp/ccyWFCf1.s:93     .text.HAL_PCD_MspInit:0000000000000000 $t
+     /tmp/ccyWFCf1.s:99     .text.HAL_PCD_MspInit:0000000000000000 HAL_PCD_MspInit
+     /tmp/ccyWFCf1.s:274    .text.HAL_PCD_MspInit:00000000000000b0 $d
+     /tmp/ccyWFCf1.s:281    .text.HAL_PCD_MspDeInit:0000000000000000 $t
+     /tmp/ccyWFCf1.s:287    .text.HAL_PCD_MspDeInit:0000000000000000 HAL_PCD_MspDeInit
+     /tmp/ccyWFCf1.s:335    .text.HAL_PCD_MspDeInit:0000000000000028 $d
+     /tmp/ccyWFCf1.s:342    .text.HAL_PCD_SetupStageCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:348    .text.HAL_PCD_SetupStageCallback:0000000000000000 HAL_PCD_SetupStageCallback
+     /tmp/ccyWFCf1.s:374    .text.HAL_PCD_DataOutStageCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:380    .text.HAL_PCD_DataOutStageCallback:0000000000000000 HAL_PCD_DataOutStageCallback
+     /tmp/ccyWFCf1.s:408    .text.HAL_PCD_DataInStageCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:414    .text.HAL_PCD_DataInStageCallback:0000000000000000 HAL_PCD_DataInStageCallback
+     /tmp/ccyWFCf1.s:442    .text.HAL_PCD_SOFCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:448    .text.HAL_PCD_SOFCallback:0000000000000000 HAL_PCD_SOFCallback
+     /tmp/ccyWFCf1.s:473    .text.HAL_PCD_ResetCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:479    .text.HAL_PCD_ResetCallback:0000000000000000 HAL_PCD_ResetCallback
+     /tmp/ccyWFCf1.s:525    .text.HAL_PCD_SuspendCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:531    .text.HAL_PCD_SuspendCallback:0000000000000000 HAL_PCD_SuspendCallback
+     /tmp/ccyWFCf1.s:571    .text.HAL_PCD_SuspendCallback:000000000000001c $d
+     /tmp/ccyWFCf1.s:576    .text.HAL_PCD_ResumeCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:582    .text.HAL_PCD_ResumeCallback:0000000000000000 HAL_PCD_ResumeCallback
+     /tmp/ccyWFCf1.s:626    .text.HAL_PCD_ResumeCallback:0000000000000024 $d
+     /tmp/ccyWFCf1.s:631    .text.HAL_PCD_ISOOUTIncompleteCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:637    .text.HAL_PCD_ISOOUTIncompleteCallback:0000000000000000 HAL_PCD_ISOOUTIncompleteCallback
+     /tmp/ccyWFCf1.s:662    .text.HAL_PCD_ISOINIncompleteCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:668    .text.HAL_PCD_ISOINIncompleteCallback:0000000000000000 HAL_PCD_ISOINIncompleteCallback
+     /tmp/ccyWFCf1.s:693    .text.HAL_PCD_ConnectCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:699    .text.HAL_PCD_ConnectCallback:0000000000000000 HAL_PCD_ConnectCallback
+     /tmp/ccyWFCf1.s:724    .text.HAL_PCD_DisconnectCallback:0000000000000000 $t
+     /tmp/ccyWFCf1.s:730    .text.HAL_PCD_DisconnectCallback:0000000000000000 HAL_PCD_DisconnectCallback
+     /tmp/ccyWFCf1.s:755    .text.USBD_LL_Init:0000000000000000 $t
+     /tmp/ccyWFCf1.s:761    .text.USBD_LL_Init:0000000000000000 USBD_LL_Init
+     /tmp/ccyWFCf1.s:857    .text.USBD_LL_Init:0000000000000068 $d
+     /tmp/ccyWFCf1.s:1484   .bss.hpcd_USB_FS:0000000000000000 hpcd_USB_FS
+     /tmp/ccyWFCf1.s:863    .text.USBD_LL_DeInit:0000000000000000 $t
+     /tmp/ccyWFCf1.s:869    .text.USBD_LL_DeInit:0000000000000000 USBD_LL_DeInit
+     /tmp/ccyWFCf1.s:903    .text.USBD_LL_Start:0000000000000000 $t
+     /tmp/ccyWFCf1.s:909    .text.USBD_LL_Start:0000000000000000 USBD_LL_Start
+     /tmp/ccyWFCf1.s:943    .text.USBD_LL_Stop:0000000000000000 $t
+     /tmp/ccyWFCf1.s:949    .text.USBD_LL_Stop:0000000000000000 USBD_LL_Stop
+     /tmp/ccyWFCf1.s:983    .text.USBD_LL_OpenEP:0000000000000000 $t
+     /tmp/ccyWFCf1.s:989    .text.USBD_LL_OpenEP:0000000000000000 USBD_LL_OpenEP
+     /tmp/ccyWFCf1.s:1028   .text.USBD_LL_CloseEP:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1034   .text.USBD_LL_CloseEP:0000000000000000 USBD_LL_CloseEP
+     /tmp/ccyWFCf1.s:1068   .text.USBD_LL_FlushEP:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1074   .text.USBD_LL_FlushEP:0000000000000000 USBD_LL_FlushEP
+     /tmp/ccyWFCf1.s:1108   .text.USBD_LL_StallEP:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1114   .text.USBD_LL_StallEP:0000000000000000 USBD_LL_StallEP
+     /tmp/ccyWFCf1.s:1148   .text.USBD_LL_ClearStallEP:0000000000000000 $t
+ARM GAS  /tmp/ccyWFCf1.s 			page 47
 
 
-     /tmp/ccKF9RBu.s:1154   .text.USBD_LL_ClearStallEP:0000000000000000 USBD_LL_ClearStallEP
-     /tmp/ccKF9RBu.s:1188   .text.USBD_LL_IsStallEP:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1194   .text.USBD_LL_IsStallEP:0000000000000000 USBD_LL_IsStallEP
-     /tmp/ccKF9RBu.s:1243   .text.USBD_LL_SetUSBAddress:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1249   .text.USBD_LL_SetUSBAddress:0000000000000000 USBD_LL_SetUSBAddress
-     /tmp/ccKF9RBu.s:1283   .text.USBD_LL_Transmit:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1289   .text.USBD_LL_Transmit:0000000000000000 USBD_LL_Transmit
-     /tmp/ccKF9RBu.s:1323   .text.USBD_LL_PrepareReceive:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1329   .text.USBD_LL_PrepareReceive:0000000000000000 USBD_LL_PrepareReceive
-     /tmp/ccKF9RBu.s:1363   .text.USBD_LL_GetRxDataSize:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1369   .text.USBD_LL_GetRxDataSize:0000000000000000 USBD_LL_GetRxDataSize
-     /tmp/ccKF9RBu.s:1395   .text.USBD_LL_Delay:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1401   .text.USBD_LL_Delay:0000000000000000 USBD_LL_Delay
-     /tmp/ccKF9RBu.s:1423   .text.USBD_static_malloc:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1429   .text.USBD_static_malloc:0000000000000000 USBD_static_malloc
-     /tmp/ccKF9RBu.s:1448   .text.USBD_static_malloc:0000000000000004 $d
-     /tmp/ccKF9RBu.s:1477   .bss.mem.0:0000000000000000 mem.0
-     /tmp/ccKF9RBu.s:1453   .text.USBD_static_free:0000000000000000 $t
-     /tmp/ccKF9RBu.s:1459   .text.USBD_static_free:0000000000000000 USBD_static_free
-     /tmp/ccKF9RBu.s:1474   .bss.mem.0:0000000000000000 $d
-     /tmp/ccKF9RBu.s:1481   .bss.hpcd_USB_FS:0000000000000000 $d
+     /tmp/ccyWFCf1.s:1154   .text.USBD_LL_ClearStallEP:0000000000000000 USBD_LL_ClearStallEP
+     /tmp/ccyWFCf1.s:1188   .text.USBD_LL_IsStallEP:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1194   .text.USBD_LL_IsStallEP:0000000000000000 USBD_LL_IsStallEP
+     /tmp/ccyWFCf1.s:1243   .text.USBD_LL_SetUSBAddress:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1249   .text.USBD_LL_SetUSBAddress:0000000000000000 USBD_LL_SetUSBAddress
+     /tmp/ccyWFCf1.s:1283   .text.USBD_LL_Transmit:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1289   .text.USBD_LL_Transmit:0000000000000000 USBD_LL_Transmit
+     /tmp/ccyWFCf1.s:1323   .text.USBD_LL_PrepareReceive:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1329   .text.USBD_LL_PrepareReceive:0000000000000000 USBD_LL_PrepareReceive
+     /tmp/ccyWFCf1.s:1363   .text.USBD_LL_GetRxDataSize:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1369   .text.USBD_LL_GetRxDataSize:0000000000000000 USBD_LL_GetRxDataSize
+     /tmp/ccyWFCf1.s:1395   .text.USBD_LL_Delay:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1401   .text.USBD_LL_Delay:0000000000000000 USBD_LL_Delay
+     /tmp/ccyWFCf1.s:1423   .text.USBD_static_malloc:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1429   .text.USBD_static_malloc:0000000000000000 USBD_static_malloc
+     /tmp/ccyWFCf1.s:1448   .text.USBD_static_malloc:0000000000000004 $d
+     /tmp/ccyWFCf1.s:1477   .bss.mem.0:0000000000000000 mem.0
+     /tmp/ccyWFCf1.s:1453   .text.USBD_static_free:0000000000000000 $t
+     /tmp/ccyWFCf1.s:1459   .text.USBD_static_free:0000000000000000 USBD_static_free
+     /tmp/ccyWFCf1.s:1474   .bss.mem.0:0000000000000000 $d
+     /tmp/ccyWFCf1.s:1481   .bss.hpcd_USB_FS:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 SystemClock_Config
@@ -2805,7 +2805,7 @@ HAL_PCD_EP_SetStall
 HAL_PCD_EP_ClrStall
 HAL_PCD_SetAddress
 HAL_PCD_EP_Transmit
-ARM GAS  /tmp/ccKF9RBu.s 			page 48
+ARM GAS  /tmp/ccyWFCf1.s 			page 48
 
 
 HAL_PCD_EP_Receive

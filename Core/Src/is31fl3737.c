@@ -1,23 +1,3 @@
-/* Copyright 2017 Jason Williams
- * Copyright 2018 Jack Humbert
- * Copyright 2018 Yiancar
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-// #include <string.h>
-// #include "progmem.h"
 #include "is31fl3737.h"
 
 extern I2C_HandleTypeDef hi2c2;
@@ -53,10 +33,9 @@ extern I2C_HandleTypeDef hi2c2;
 #define DRIVER_COUNT 2
 #define DRIVER_LED_TOTAL 96
 
-
 // Transfer buffer for TWITransmitData()
 uint8_t g_twi_transfer_buffer[20];
-is31_led g_is31_leds[2];
+extern const is31_led g_is31_leds[96];
 
 // These buffers match the IS31FL3737 PWM registers.
 // The control buffers match the PG0 LED On/Off registers.
@@ -69,6 +48,7 @@ bool    g_pwm_buffer_update_required = false;
 
 uint8_t g_led_control_registers[DRIVER_COUNT][24] = {{0}};
 bool    g_led_control_registers_update_required   = false;
+
 
 void IS31FL3737_write_register(uint8_t addr, uint8_t reg, uint8_t data) {
     HAL_StatusTypeDef status = HAL_ERROR;
@@ -203,6 +183,10 @@ void IS31FL3737_update_pwm_buffers(uint8_t addr1, uint8_t addr2) {
         IS31FL3737_write_register(addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_PWM);
 
         IS31FL3737_write_pwm_buffer(addr1, g_pwm_buffer[0]);
+
+        IS31FL3737_write_register(addr2, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
+        IS31FL3737_write_register(addr2, ISSI_COMMANDREGISTER, ISSI_PAGE_PWM);
+
         IS31FL3737_write_pwm_buffer(addr2, g_pwm_buffer[1] );
     }
     g_pwm_buffer_update_required = false;
@@ -213,7 +197,7 @@ void IS31FL3737_update_led_control_registers(uint8_t addr1, uint8_t addr2) {
         // Firstly we need to unlock the command register and select PG0
         IS31FL3737_write_register(addr1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
         IS31FL3737_write_register(addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_LEDCONTROL);
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 192; i++) {
             IS31FL3737_write_register(addr1, i, g_led_control_registers[0][i]);
             IS31FL3737_write_register(addr2, i, g_led_control_registers[1][i] );
         }

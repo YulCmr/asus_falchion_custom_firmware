@@ -33,6 +33,11 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include  <string.h>
+#include "stdint.h"
+#include "stdbool.h"
+#include "usbd_hid.h"
+#include "keyboard.h"
+#include "is31fl3737.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

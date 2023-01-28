@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -15,73 +14,28 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-#include "usbd_hid.h"
 
-/* USER CODE END Includes */
+//#define SYS_MEM_START_ADDR	0x0BF90000
+
 
 /* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-// USB media codes
-#define USB_HID_SCAN_NEXT 0x01
-#define USB_HID_SCAN_PREV 0x02
-#define USB_HID_STOP      0x04
-#define USB_HID_EJECT     0x08
-#define USB_HID_PAUSE     0x10
-#define USB_HID_MUTE      0x20
-#define USB_HID_VOL_UP    0x40
-#define USB_HID_VOL_DEC   0x80
-/* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
-
 UART_HandleTypeDef huart3;
 
-/* USER CODE BEGIN PV */
-extern USBD_HandleTypeDef hUsbDeviceFS;
+// void (*boot_jump)(void);
 
-// HID Keyboard
- struct keyboardHID_t {
-     uint8_t id;
-     uint8_t modifiers;
-     //uint8_t reserved;
-     uint8_t key1;
-     uint8_t key2;
-     uint8_t key3;
-     uint8_t key4;
-     uint8_t key5;
-     uint8_t key6;
- };
-
- // keyboardHID.id = 1;
-
- // HID Media
- struct mediaHID_t {
-   uint8_t id;
-   uint8_t keys;
- };
-
-  // mediaHID.id = 2;
-
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -90,15 +44,8 @@ static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ICACHE_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-
-/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
@@ -106,65 +53,44 @@ static void MX_ICACHE_Init(void);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-   struct keyboardHID_t keyboardHID;
-   struct mediaHID_t mediaHID;
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
+  /* DFU BL Jump. May be useless in the end ... We'll decide later ! */
+  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+  // HAL_Delay(1);
+  // if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0 == GPIO_PIN_SET)) {
+  //   HAL_DeInit();
+  //   boot_jump = (void (*)(void))(*((uint32_t *)(SYS_MEM_START_ADDR + 4)));
+  //   __set_MSP(*(__IO uint32_t*)SYS_MEM_START_ADDR);
+  //
+  //   boot_jump();
+  // }
+  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
-  MX_I2C2_Init();
-  MX_USART3_UART_Init();
-  MX_USB_Device_Init();
   MX_ICACHE_Init();
-  /* USER CODE BEGIN 2 */
-  HAL_Delay(2000);
-  keyboardHID.id = 1;
-  mediaHID.id = 2;
-  /* USER CODE END 2 */
+  // MX_I2C1_Init();
+  MX_I2C2_Init();
+  // MX_USART3_UART_Init();
+  MX_USB_Device_Init();
+
+  /* Init RGB Matrixes */
+  IS31FL3737_init(161);
+  IS31FL3737_init(191);
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-
-    mediaHID.keys = USB_HID_VOL_UP;
-    USBD_HID_SendReport(&hUsbDeviceFS, &mediaHID, sizeof(mediaHID));
-    HAL_Delay(30);
-    mediaHID.keys = 0x00;
-    USBD_HID_SendReport(&hUsbDeviceFS, &mediaHID, sizeof(mediaHID));
-    HAL_Delay(1000);
-
-    keyboardHID.key1 = 0x04;
-    USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
-    HAL_Delay(30);
-    keyboardHID.key1 = 0x00;
-    USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
-    HAL_Delay(1000);
-
-
+    scan_matrix();
+    IS31FL3737_update_pwm_buffers(161, 191);
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -410,6 +336,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, row_0_Pin|row_1_Pin|row_2_Pin|row_3_Pin
                           |row_4_Pin|row_5_Pin, GPIO_PIN_RESET);
 
+  HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_SET);
+
   /*Configure GPIO pins : col_13_Pin col_0_Pin col_1_Pin col_2_Pin
                            col_3_Pin col_4_Pin col_5_Pin col_6_Pin
                            col_7_Pin col_8_Pin col_9_Pin col_10_Pin
@@ -419,15 +347,13 @@ static void MX_GPIO_Init(void)
                           |col_7_Pin|col_8_Pin|col_9_Pin|col_10_Pin
                           |col_11_Pin|col_12_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : reset_radio_Pin */
   GPIO_InitStruct.Pin = reset_radio_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF15_EVENTOUT;
   HAL_GPIO_Init(reset_radio_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : row_0_Pin row_1_Pin row_2_Pin row_3_Pin
@@ -435,23 +361,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = row_0_Pin|row_1_Pin|row_2_Pin|row_3_Pin
                           |row_4_Pin|row_5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : matrix_Pin */
   GPIO_InitStruct.Pin = matrix_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF15_EVENTOUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(matrix_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
