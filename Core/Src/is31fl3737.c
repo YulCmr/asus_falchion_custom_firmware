@@ -30,8 +30,7 @@ extern I2C_HandleTypeDef hi2c2;
 #define ISSI_REG_SWPULLUP 0x0F       // PG3
 #define ISSI_REG_CSPULLUP 0x10       // PG3
 
-#define DRIVER_COUNT 2
-#define DRIVER_LED_TOTAL 96
+
 
 // Transfer buffer for TWITransmitData()
 uint8_t g_twi_transfer_buffer[20];
@@ -95,8 +94,6 @@ void IS31FL3737_init(uint8_t addr) {
     // then disable software shutdown.
 
     // Unlock the command register.
-    printf("[asus]Init: %d\r\n", addr);
-
     IS31FL3737_write_register(addr, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
 
     // Select PG0
@@ -114,7 +111,7 @@ void IS31FL3737_init(uint8_t addr) {
     // Set PWM on all LEDs to 0
     // No need to setup Breath registers to PWM as that is the default.
     for (int i = 0x00; i <= 0xBF; i++) {
-        IS31FL3737_write_register(addr, i, 0x00);
+        IS31FL3737_write_register(addr, i, 0xFF);
     }
 
     // Unlock the command register.
@@ -197,7 +194,7 @@ void IS31FL3737_update_led_control_registers(uint8_t addr1, uint8_t addr2) {
         // Firstly we need to unlock the command register and select PG0
         IS31FL3737_write_register(addr1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
         IS31FL3737_write_register(addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_LEDCONTROL);
-        for (int i = 0; i < 192; i++) {
+        for (int i = 0; i < 24; i++) {
             IS31FL3737_write_register(addr1, i, g_led_control_registers[0][i]);
             IS31FL3737_write_register(addr2, i, g_led_control_registers[1][i] );
         }

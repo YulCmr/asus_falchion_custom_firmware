@@ -37,7 +37,7 @@ build/main.o: Core/Src/main.c Core/Inc/main.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- Core/Inc/keyboard.h Core/Inc/main.h Core/Inc/is31fl3737.h
+ Core/Inc/keyboard.h Core/Inc/main.h Core/Inc/is31fl3737.h Core/Inc/rgb.h
 Core/Inc/main.h:
 Drivers/STM32L5xx_HAL_Driver/Inc/stm32l5xx_hal.h:
 Core/Inc/stm32l5xx_hal_conf.h:
@@ -82,3 +82,4 @@ Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
 Core/Inc/keyboard.h:
 Core/Inc/main.h:
 Core/Inc/is31fl3737.h:
+Core/Inc/rgb.h:

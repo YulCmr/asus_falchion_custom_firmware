@@ -38,6 +38,7 @@ extern "C" {
 #include "usbd_hid.h"
 #include "keyboard.h"
 #include "is31fl3737.h"
+#include "rgb.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

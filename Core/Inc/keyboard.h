@@ -9,8 +9,10 @@
 #define XXX KC_NO
 
 void scan_matrix(void);
-void print_keymap(void);
-
+bool function_layer_is_enabled(void);
+uint8_t get_led_pattern(void);
+void set_led_pattern(uint8_t pattern);
+bool current_base_layer(void);
 
 #define LAYOUT_96_iso( \
       K00, K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, K0B, K0C,       \

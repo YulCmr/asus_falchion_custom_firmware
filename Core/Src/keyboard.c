@@ -1,11 +1,9 @@
 #include "keyboard.h"
 
 #define MAX_NUMBER_OF_KEYS    6
-#define printf(...)
 
 uint16_t current_matrix[6];
 uint16_t old_matrix[6];
-
 
 /* Matrix storage :
   {0xFFFF},
@@ -15,6 +13,7 @@ uint16_t old_matrix[6];
   {0xFFFF},
   {0xFFFF}
 */
+
 static uint8_t matrix_keys[MAX_NUMBER_OF_KEYS];
 static uint8_t matrix_modifiers = 0x00;
 static uint8_t matrix_medias = 0x00;
@@ -23,10 +22,11 @@ static uint8_t number_of_keys;
 // Layout layer control
 static uint8_t base_layer;
 static uint8_t function_layer;
+static bool gui_active = 1;
 
 // Brightness Control
-static uint8_t brightness_levels[] = {0, 7, 15, 31, 63, 127, 255};
-static uint8_t current_brightness;
+
+static uint8_t led_pattern = 0;
 
 // Flags to send HID Report only when needed
 static bool media_update_needed = false;
@@ -36,6 +36,23 @@ static bool keyboard_update_needed = false;
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS];
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
+
+bool current_base_layer(void) {
+  return base_layer;
+}
+
+bool function_layer_is_enabled(void) {
+  if(function_layer != 0) return 1;
+  else return 0;
+}
+
+uint8_t get_led_pattern(void) {
+  return led_pattern;
+}
+
+void set_led_pattern(uint8_t pattern) {
+  led_pattern = pattern;
+}
 
 static void send_matrix(void);
 
@@ -106,25 +123,37 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       media_update_needed = true;
       break;
 
+    case 0x700B:
+    if(logic_level) {
+      gui_active = !gui_active;
+    }
+    break;
+
+    /* ------------ Led Pattern left ------------ */
+    case 0x7821:
+      if(logic_level) {
+        if(led_pattern != 0)
+        load_led_pattern(--led_pattern);
+      }
+      break;
+    /* ------------ Led Pattern right ------------ */
+    case 0x7822:
+      if(logic_level) {
+        if(led_pattern != NUMBER_OF_PATTERN-1)
+        load_led_pattern(++led_pattern);
+      }
+      break;
     /* ------------ Brightness down ------------ */
     case 0x7803:
       if(logic_level) {
-        if(current_brightness != 0) {
-          IS31FL3737_set_color_all(brightness_levels[--current_brightness],
-                                    brightness_levels[current_brightness],
-                                    brightness_levels[current_brightness]);
-        }
+        brightness_decrease();
       }
       break;
 
     /* ------------ Brightness up ------------ */
     case 0x7804:
       if(logic_level) {
-        if(current_brightness != 6) {
-          IS31FL3737_set_color_all(brightness_levels[++current_brightness],
-                                    brightness_levels[current_brightness],
-                                    brightness_levels[current_brightness]);
-        }
+        brightness_increase();
       }
       break;
 
@@ -136,6 +165,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       else {
         function_layer = 0;
       }
+      update_led_matrix();
       break;
 
     /* ------------  FN Lock ------------*/
@@ -146,14 +176,24 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       break;
 
     /* ------------ Modifiers ------------ */
+    case 0xE3 :
+    case 0xE7 :
+      if(gui_active) {
+        if(logic_level) {
+          matrix_modifiers |= 1<<(key-0xE0);
+        }
+        else {
+          matrix_modifiers &= ~(1 << (key-0xE0));
+        }
+        keyboard_update_needed = true;
+      }
+      break;
     case 0xE0 :
     case 0xE1 :
     case 0xE2 :
-    case 0xE3 :
     case 0xE4 :
     case 0xE5 :
     case 0xE6 :
-    case 0xE7 :
       if(logic_level) {
         matrix_modifiers |= 1<<(key-0xE0);
       }
@@ -287,7 +327,7 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO,    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,     KC_NO,          KC_NO,
         KC_NO,    KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,                     KC_NO,
         KC_NO,    GUI_TOG,  KC_NO,                     KC_NO,                              KC_NO,     QK_MOMENTARY,        KC_MS_RIGHT,    KC_BSPC,
-        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_MOD,   RGB_RMOD,       BL_UP
+        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_RMOD,   RGB_MOD,       BL_UP
     ),
     [3] = LAYOUT_96_iso(
         KC_GRV,   KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,     KC_F10,   KC_F11,    KC_F12,
@@ -295,6 +335,6 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO,    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,     KC_NO,          KC_NO,
         KC_NO,    KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,                     KC_NO,
         KC_NO,    GUI_TOG,  KC_NO,                     KC_NO,                              KC_NO,     QK_MOMENTARY,        KC_MS_RIGHT,    KC_BSPC,
-        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_MOD,   RGB_RMOD,       BL_UP
+        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_RMOD,   RGB_MOD,       BL_UP
     )
 };

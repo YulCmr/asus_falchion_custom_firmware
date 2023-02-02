@@ -23,6 +23,9 @@
 // #include <stdbool.h>
 #include "main.h"
 
+#define DRIVER_COUNT 2
+#define DRIVER_LED_TOTAL 96
+
 typedef struct is31_led {
     uint8_t driver;
     uint8_t r;

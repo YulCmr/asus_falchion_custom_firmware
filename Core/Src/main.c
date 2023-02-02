@@ -45,6 +45,8 @@ static void MX_I2C2_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ICACHE_Init(void);
 
+extern const uint32_t ledmaps[][DRIVER_LED_TOTAL];
+
 /* Private user code ---------------------------------------------------------*/
 
 /**
@@ -84,6 +86,8 @@ int main(void)
   /* Init RGB Matrixes */
   IS31FL3737_init(161);
   IS31FL3737_init(191);
+
+  load_led_pattern(get_led_pattern());
 
   /* Infinite loop */
   while (1)
