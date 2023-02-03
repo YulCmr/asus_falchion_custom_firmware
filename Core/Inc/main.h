@@ -36,6 +36,7 @@ extern "C" {
 #include "stdint.h"
 #include "stdbool.h"
 #include "usbd_hid.h"
+#include "usb_device.h"
 #include "keyboard.h"
 #include "is31fl3737.h"
 #include "rgb.h"

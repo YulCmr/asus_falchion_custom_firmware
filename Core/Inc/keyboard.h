@@ -6,6 +6,9 @@
 #define MATRIX_ROWS 6
 #define MATRIX_COLS 14
 
+#define BASE_LAYER  0
+#define FNLK_LAYER  1
+
 #define XXX KC_NO
 
 void scan_matrix(void);
@@ -14,13 +17,12 @@ uint8_t get_led_pattern(void);
 void set_led_pattern(uint8_t pattern);
 bool current_base_layer(void);
 
-#define LAYOUT_96_iso( \
-      K00, K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, K0B, K0C,       \
-      K10, K11, K12, K13, K14, K15, K16, K17, K18, K19, K1A, K1B, K1C,       \
-      K20, K21, K22, K23, K24, K25, K26, K27, K28, K29, K2A, K2B, K2C, K2D,  \
-      K30, K31, K32, K33, K34, K35, K36, K37, K38, K39, K3A, K3B,      K3D,  \
-      K40, K41, K42,           K45,                K49, K4A,      K4C, K4D,  \
-      K50, K51,      K53, K54,                          K5A, K5B, K5C, K5D   \
+#define LAYOUT_falchion_iso( \
+      K00, K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, K0B, K0C, K4D, K50, \
+      K10, K11, K12, K13, K14, K15, K16, K17, K18, K19, K1A, K1B, K1C,      K51, \
+      K20, K21, K22, K23, K24, K25, K26, K27, K28, K29, K2A, K2B, K2C, K2D, K53, \
+      K30, K31, K32, K33, K34, K35, K36, K37, K38, K39, K3A, K3B, K3D, K5D, K54, \
+      K40, K41, K42,           K45,                K49, K4A, K4C, K5C, K5A, K5B  \
 ) { \
     { K00, K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, K0B, K0C, XXX }, \
     { K10, K11, K12, K13, K14, K15, K16, K17, K18, K19, K1A, K1B, K1C, XXX }, \
@@ -29,6 +31,7 @@ bool current_base_layer(void);
     { K40, K41, K42, XXX, XXX, K45, XXX, XXX, XXX, K49, K4A, XXX, K4C, K4D }, \
     { K50, K51, XXX, K53, K54, XXX, XXX, XXX, XXX, XXX, K5A, K5B, K5C, K5D }  \
 }
+
 
 enum qk_keycode_ranges {
 // Ranges
@@ -44,11 +47,11 @@ enum qk_keycode_ranges {
     QK_LAYER_MOD_MAX               = 0x51FF,
     QK_TO                          = 0x5200,
     QK_TO_MAX                      = 0x521F,
-    QK_MOMENTARY                   = 0x5220,
+    KC_FN                          = 0x5220,
     QK_MOMENTARY_MAX               = 0x523F,
     QK_DEF_LAYER                   = 0x5240,
     QK_DEF_LAYER_MAX               = 0x525F,
-    QK_TOGGLE_LAYER                = 0x5260,
+    KC_FNLK                       = 0x5260,
     QK_TOGGLE_LAYER_MAX            = 0x527F,
     QK_ONE_SHOT_LAYER              = 0x5280,
     QK_ONE_SHOT_LAYER_MAX          = 0x529F,

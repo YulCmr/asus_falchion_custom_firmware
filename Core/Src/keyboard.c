@@ -33,9 +33,13 @@ static bool media_update_needed = false;
 static bool keyboard_update_needed = false;
 
 /* Keyboard layout, see end of file */
-const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS];
+const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS];
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
+
+// void USBH_HID_EventCallback(USBD_HandleTypeDef *phost) {
+//   brightness_decrease();
+// }
 
 bool current_base_layer(void) {
   return base_layer;
@@ -172,6 +176,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
     case 0x5260 :
       if(logic_level) {
         base_layer = !base_layer;
+        update_led_matrix();
       }
       break;
 
@@ -262,7 +267,7 @@ void scan_matrix(void) {
           else logic_level = 0;
 
           /* Retrieve keycode */
-          key = keymaps[base_layer+function_layer][i][c];
+          key = keymap[base_layer+function_layer][i][c];
 
           /* Process key event (and store if needed) */
           process_matrix_event(key, logic_level);
@@ -304,37 +309,33 @@ void send_matrix(void) {
 }
 
 /* Edit Wisely ... */
-const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT_96_iso(
-        KC_ESC,   KC_1,     KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,      KC_0,     KC_MINS,   KC_EQL,
-        KC_TAB,   KC_Q,     KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,      KC_P,     KC_LBRC,   KC_RBRC,
-        KC_CAPS,  KC_A,     KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,      KC_SCLN,  KC_QUOT,   KC_NONUS_HASH,  KC_ENT,
-        KC_LSFT,  KC_BSLS,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM,   KC_DOT,   KC_SLSH,                   KC_RSFT,
-        KC_LCTL,  KC_LWIN,  KC_LALT,                   KC_SPC,                             KC_RALT,   QK_MOMENTARY,        KC_RCTL,        KC_BSPC,
-        KC_INS,   KC_DEL,            KC_PGUP, KC_PGDN,                                                KC_DOWN,  KC_RGHT,   KC_LEFT,        KC_UP
+const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS] = {
+    [0] = LAYOUT_falchion_iso(
+        KC_ESC,   KC_1,     KC_2,   KC_3,    KC_4,   KC_5,   KC_6,    KC_7,   KC_8,   KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_INS,
+        KC_TAB,   KC_Q,     KC_W,   KC_E,    KC_R,   KC_T,   KC_Y,    KC_U,   KC_I,   KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_DEL,
+        KC_CAPS,  KC_A,     KC_S,   KC_D,    KC_F,   KC_G,   KC_H,    KC_J,   KC_K,   KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,   KC_PGUP,
+        KC_LSFT,  KC_BSLS,  KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,    KC_N,   KC_M,   KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,    KC_PGDN,
+        KC_LCTL,  KC_LWIN,  KC_LALT,                 KC_SPC,                          KC_RALT,  KC_FN,    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
-    [1] = LAYOUT_96_iso(
-        KC_GRV,   KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,     KC_F10,   KC_F11,    KC_F12,
-        KC_TAB,   KC_Q,     KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,      KC_P,     KC_LBRC,   KC_RBRC,
-        KC_CAPS,  KC_A,     KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,      KC_SCLN,  KC_QUOT,   KC_NONUS_HASH,  KC_ENT,
-        KC_LSFT,  KC_BSLS,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM,   KC_DOT,   KC_SLSH,                   KC_RSFT,
-        KC_LCTL,  KC_LWIN,  KC_LALT,                   KC_SPC,                             KC_RALT,   QK_MOMENTARY,        KC_RCTL,        KC_BSPC,
-        KC_INS,   KC_DEL,            KC_PGUP, KC_PGDN,                                                KC_DOWN,  KC_RGHT,   KC_LEFT,        KC_UP
+    [1] = LAYOUT_falchion_iso(
+        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_BSPC,  KC_INS,
+        KC_TAB,   KC_Q,     KC_W,   KC_E,    KC_R,   KC_T,   KC_Y,    KC_U,   KC_I,   KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_DEL,
+        KC_CAPS,  KC_A,     KC_S,   KC_D,    KC_F,   KC_G,   KC_H,    KC_J,   KC_K,   KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,   KC_PGUP,
+        KC_LSFT,  KC_BSLS,  KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,    KC_N,   KC_M,   KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,    KC_PGDN,
+        KC_LCTL,  KC_LWIN,  KC_LALT,                 KC_SPC,                          KC_RALT,  KC_FN,    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
-    [2] = LAYOUT_96_iso(
-        KC_GRV,   KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,     KC_F10,   KC_F11,    KC_F12,
-        KC_NO,    KC_MPLY,  KC_MSTP, KC_MPRV, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU, KC_NO,   KC_NO,     KC_PSCR,  KC_NO,     KC_NO,
-        KC_NO,    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,     KC_NO,          KC_NO,
-        KC_NO,    KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,                     KC_NO,
-        KC_NO,    GUI_TOG,  KC_NO,                     KC_NO,                              KC_NO,     QK_MOMENTARY,        KC_MS_RIGHT,    KC_BSPC,
-        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_RMOD,   RGB_MOD,       BL_UP
+    [2] = LAYOUT_falchion_iso(
+        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_BSPC,  KC_FNLK,
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
+        KC_NO,    GUI_TOG,  KC_NO,                   KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
-    [3] = LAYOUT_96_iso(
-        KC_GRV,   KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,     KC_F10,   KC_F11,    KC_F12,
-        KC_NO,    KC_MPLY,  KC_MSTP, KC_MPRV, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU, KC_NO,   KC_NO,     KC_PSCR,  KC_NO,     KC_NO,
-        KC_NO,    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,     KC_NO,          KC_NO,
-        KC_NO,    KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,     KC_NO,    KC_NO,                     KC_NO,
-        KC_NO,    GUI_TOG,  KC_NO,                     KC_NO,                              KC_NO,     QK_MOMENTARY,        KC_MS_RIGHT,    KC_BSPC,
-        QK_TOGGLE_LAYER,    KC_NO,   KC_NO,   KC_NO,                                                  BL_DOWN,  RGB_RMOD,   RGB_MOD,       BL_UP
+    [3] = LAYOUT_falchion_iso(
+        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_BSPC,  KC_FNLK,
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
+        KC_NO,    GUI_TOG,  KC_NO,                   KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
     )
 };
