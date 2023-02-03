@@ -18,7 +18,7 @@ void update_led_matrix(void);
     K50, K51, K52, K53, K54, K55, K56, K57, K58, K59, K09, K08, K07,      K05, \
     K60, K61, K62, K63, K64, K65, K66, K67, K68, K69, K70, K11, K12, K10, K14, \
     K20, K21, K22, K23, K24, K25, K26, K27, K28, K29, K19, K18, K17, K16, K15, \
-    K30, K31, K32,           K33,                K34, K35, K37, K36, K38, K39  \
+    K30, K31, K32,           K33,                K34, K35, K36, K37, K38, K39  \
 ) { \
     K00, K01, K02, K03, K04, K05, XXX, K07, K08, K09, XXX, XXX, \
     K10, K11, K12, XXX, K14, K15, K16, K17, K18, K19, XXX, XXX, \

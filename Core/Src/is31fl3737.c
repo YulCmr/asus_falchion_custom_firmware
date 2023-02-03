@@ -127,20 +127,35 @@ void IS31FL3737_init(uint8_t addr) {
     HAL_Delay(100);
 }
 
-void IS31FL3737_set_color(int index, uint8_t red, uint8_t green, uint8_t blue) {
-    if (index >= 0 && index < DRIVER_LED_TOTAL) {
-        is31_led led = g_is31_leds[index];
+void IS31FL3737_set_color(int index, bool invert, uint8_t red, uint8_t green, uint8_t blue) {
+  uint8_t brightness_percentage = get_led_brightness();
+  uint16_t r, g, b;
+  if (index >= 0 && index < DRIVER_LED_TOTAL) {
+      is31_led led = g_is31_leds[index];
 
-        g_pwm_buffer[led.driver][led.r] = red;
-        g_pwm_buffer[led.driver][led.g] = green;
-        g_pwm_buffer[led.driver][led.b] = blue;
-        g_pwm_buffer_update_required    = true;
-    }
+      if(invert) {
+        red = ~red;
+        green = ~green;
+        blue = ~blue;
+      }
+
+      r = red * brightness_percentage;
+      red = r / 100;
+      g = green * brightness_percentage;
+      green = g / 100;
+      b = blue * brightness_percentage;
+      blue = b / 100;
+
+      g_pwm_buffer[led.driver][led.r] = red;
+      g_pwm_buffer[led.driver][led.g] = green;
+      g_pwm_buffer[led.driver][led.b] = blue;
+      g_pwm_buffer_update_required    = true;
+  }
 }
 
 void IS31FL3737_set_color_all(uint8_t red, uint8_t green, uint8_t blue) {
     for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
-        IS31FL3737_set_color(i, red, green, blue);
+        IS31FL3737_set_color(i, 0, red, green, blue);
     }
 }
 

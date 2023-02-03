@@ -181,6 +181,11 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_E
   HID_EPIN_SIZE,                                      /* wMaxPacketSize: 4 Bytes max */
   0x00,
   HID_FS_BINTERVAL,                                   /* bInterval: Polling Interval */
+  HID_EPOUT_ADDR,                                      /* bEndpointAddress: Endpoint Address (IN) */
+  0x03,                                               /* bmAttributes: Interrupt endpoint */
+  HID_EPOUT_SIZE,                                      /* wMaxPacketSize: 4 Bytes max */
+  0x00,
+  HID_FS_BINTERVAL,                                   /* bInterval: Polling Interval */
   /* 34 */
 };
 #endif /* USE_USBD_COMPOSITE  */
@@ -281,6 +286,7 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   // 0x75, 0x08,        //   Report Size (8)
   // 0x81, 0x01,        //   Input (Constant) reserved byte(1)
 
+
   // 0x95, 0x05,        //   Report Count (5)
   // 0x75, 0x01,        //   Report Size (1)
   // 0x05, 0x08,        //   Usage Page (Page# for LEDs)
@@ -290,6 +296,16 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   // 0x95, 0x01,        //   Report Count (1)
   // 0x75, 0x03,        //   Report Size (3)
   // 0x91, 0x01,        //   Output (Data, Variable, Absolute), Led report padding
+  //
+  // 0x95, 0x05,                    //   REPORT_COUNT (5)
+  // 0x75, 0x01,                    //   REPORT_SIZE (1)
+  // 0x05, 0x08,                    //   USAGE_PAGE (LEDs)
+  // 0x19, 0x01,                    //   USAGE_MINIMUM (Num Lock)
+  // 0x29, 0x05,                    //   USAGE_MAXIMUM (Kana)
+  // 0x91, 0x02,                    //   OUTPUT (Data,Var,Abs)
+  // 0x95, 0x01,                    //   REPORT_COUNT (1)
+  // 0x75, 0x03,                    //   REPORT_SIZE (3)
+  // 0x91, 0x03,                    //   OUTPUT (Cnst,Var,Abs)
 
   0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
   0x95, 0x06,        //   Report Count (6)
@@ -584,6 +600,26 @@ uint8_t USBD_HID_SendReport(USBD_HandleTypeDef *pdev, uint8_t *report, uint16_t 
   return (uint8_t)USBD_OK;
 }
 
+uint8_t USBD_HID_ReceiveReport(USBD_HandleTypeDef *pdev, uint8_t *report, uint16_t len)
+{
+  USBD_HID_HandleTypeDef *hhid = (USBD_HID_HandleTypeDef*)pdev->pClassData;
+
+  if (hhid == NULL)
+  {
+    return (uint8_t)USBD_FAIL;
+  }
+
+
+  if(pdev->dev_state == USBD_STATE_CONFIGURED)
+  {
+    if(hhid->state == USBD_HID_IDLE)
+    {
+        hhid->state = USBD_HID_BUSY;
+        (void)USBD_LL_PrepareReceive(pdev, HID_EPOUT_ADDR, report, len);
+    }
+  }
+  return (uint8_t)USBD_OK;
+}
 /**
   * @brief  USBD_HID_GetPollingInterval
   *         return polling interval from endpoint descriptor

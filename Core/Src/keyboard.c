@@ -22,6 +22,7 @@ static uint8_t number_of_keys;
 // Layout layer control
 static uint8_t base_layer;
 static uint8_t function_layer;
+static uint8_t macro_layer;
 static bool gui_active = 1;
 
 // Brightness Control
@@ -50,6 +51,11 @@ bool function_layer_is_enabled(void) {
   else return 0;
 }
 
+bool macro_layer_is_enabled(void) {
+  if(macro_layer != 0) return 1;
+  else return 0;
+}
+
 uint8_t get_led_pattern(void) {
   return led_pattern;
 }
@@ -74,6 +80,13 @@ static void send_matrix(void);
  };
 
 struct keyboardHID_t keyboardHID;
+
+// HID Leds
+ struct ledsHID_t {
+     uint8_t leds_bitfield;
+ };
+
+struct ledsHID_t ledsHID;
 
  // HID Media
  struct mediaHID_t {
@@ -107,6 +120,9 @@ uint16_t rows[MATRIX_ROWS] = {GPIO_PIN_0,
                               GPIO_PIN_5
                             };
 
+// void USBD_HID_EventCallback(USBD_HandleTypeDef *phost) {
+//   brightness_decrease();
+// }
 
 void process_matrix_event(uint16_t key, bool logic_level) {
   switch(key) {
@@ -127,6 +143,16 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       media_update_needed = true;
       break;
 
+    /* Macro key (FN+ALT) */
+    case 0x7700:
+      if(logic_level) {
+        macro_layer = 2;
+      }
+      else {
+        macro_layer = 0;
+      }
+      update_led_matrix();
+      break;
     case 0x700B:
     if(logic_level) {
       gui_active = !gui_active;
@@ -168,6 +194,8 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       }
       else {
         function_layer = 0;
+        /* if Macro layer was active, disable it */
+        if(macro_layer != 0) macro_layer = 0;  //disabled for now, may be useless in definitive
       }
       update_led_matrix();
       break;
@@ -267,7 +295,7 @@ void scan_matrix(void) {
           else logic_level = 0;
 
           /* Retrieve keycode */
-          key = keymap[base_layer+function_layer][i][c];
+          key = keymap[base_layer+function_layer+macro_layer][i][c];
 
           /* Process key event (and store if needed) */
           process_matrix_event(key, logic_level);
@@ -283,6 +311,7 @@ void scan_matrix(void) {
 }
 
 void send_matrix(void) {
+  uint8_t test;
 
   /* Copy previously processed and stored keys */
   keyboardHID.id = 1;
@@ -300,10 +329,14 @@ void send_matrix(void) {
   /* If needed, send keys on USB */
   if(keyboard_update_needed == true) {
     USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
+    // USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
+    // if(ledsHID.leds_bitfield != 0) brightness_decrease();
     keyboard_update_needed = false;
   }
   if(media_update_needed == true) {
     USBD_HID_SendReport(&hUsbDeviceFS, &mediaHID, sizeof(mediaHID));
+    // USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
+    // if(ledsHID.leds_bitfield != 0) brightness_decrease();
     media_update_needed = false;
   }
 }
@@ -325,17 +358,31 @@ const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL,  KC_LWIN,  KC_LALT,                 KC_SPC,                          KC_RALT,  KC_FN,    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_falchion_iso(
-        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_BSPC,  KC_FNLK,
+        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
         KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
-        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
-        KC_NO,    GUI_TOG,  KC_NO,                   KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
+        KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
     [3] = LAYOUT_falchion_iso(
-        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_BSPC,  KC_FNLK,
+        KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
         KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
-        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
-        KC_NO,    GUI_TOG,  KC_NO,                   KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
+        KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
+    ),
+    [4] = LAYOUT_falchion_iso(
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    KC_NO,    KC_NO,    KC_NO
+    ),
+    [5] = LAYOUT_falchion_iso(
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_F13,   KC_F14, KC_F15,  KC_F16, KC_F17, KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    KC_NO,    KC_NO,    KC_NO
     )
 };

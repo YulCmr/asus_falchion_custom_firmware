@@ -13,6 +13,7 @@
 
 void scan_matrix(void);
 bool function_layer_is_enabled(void);
+bool macro_layer_is_enabled(void);
 uint8_t get_led_pattern(void);
 void set_led_pattern(uint8_t pattern);
 bool current_base_layer(void);

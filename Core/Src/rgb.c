@@ -85,6 +85,22 @@ const bool fn_ledmaps[][DRIVER_LED_TOTAL] = {
     )
 };
 
+const bool macro_ledmaps[][DRIVER_LED_TOTAL] = {
+    [0] = PATTERN_leds(
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    0,
+        0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0,       0,          0, 0, 0, 0, 0, 0
+    ),
+    [1] = PATTERN_leds(
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    0,
+        0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0,       0,          0, 0, 0, 0, 0, 0
+    )
+};
 
 void update_led_matrix(void) {
   uint8_t current_used_led_pattern = get_led_pattern();
@@ -98,36 +114,64 @@ void update_led_matrix(void) {
   for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
       /* If FN Key is pressed down, we will process different color for them
       See "fn_ledmaps" to check which keys are concerned with this color shift */
-      if( (function_layer_is_enabled() && (fn_ledmaps[current_base_layer()][i] == true)) ) {
-        /* Controls color of function keys while FN is pressed down */
+      if( (macro_layer_is_enabled() == true && (macro_ledmaps[current_base_layer()][i] == true) && function_layer_is_enabled() == true) ) {
+        /* Controls color of macro keys while FN+MACRO is held down */
         switch(current_used_led_pattern) {
           case WHITE:
-              IS31FL3737_set_color(i, (uint8_t)(0xFF*brightness_levels[current_brightness]/100),
-                                      (uint8_t)0,
-                                      (uint8_t)0 );
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0xFF,
+                      (uint8_t)0x00,
+                      (uint8_t)0x00);
               break;
           case RUST:
-              IS31FL3737_set_color(i, (uint8_t)0,
-                                      (uint8_t)(0xFF*brightness_levels[current_brightness]/100),
-                                      (uint8_t)(0xFF*brightness_levels[current_brightness]/100) );
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0x00,
+                      (uint8_t)0xFF,
+                      (uint8_t)0xFF);
               break;
           /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
           default:
-              IS31FL3737_set_color(i, (uint8_t)(((~ledmaps[current_used_led_pattern+fn_lock_offset][i])>>16)*brightness_levels[current_brightness]/100),
-                                      (uint8_t)((((~ledmaps[current_used_led_pattern+fn_lock_offset][i])>>8)&0xFF)*brightness_levels[current_brightness]/100),
-                                      (uint8_t)(((~ledmaps[current_used_led_pattern+fn_lock_offset][i])&0xFF)*brightness_levels[current_brightness]/100) );
+              IS31FL3737_set_color(i, 1,
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
+              break;
+        }
+      }
+      else if( (function_layer_is_enabled() == true && (fn_ledmaps[current_base_layer()][i] == true) && macro_layer_is_enabled() == false) ) {
+        /* Controls color of function keys while FN is held down */
+        switch(current_used_led_pattern) {
+          case WHITE:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0xFF,
+                      (uint8_t)0x00,
+                      (uint8_t)0x00);
+              break;
+          case RUST:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0x00,
+                      (uint8_t)0xFF,
+                      (uint8_t)0xFF);
+              break;
+          /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
+          default:
+              IS31FL3737_set_color(i, 1,
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
               break;
         }
       }
       else
-        IS31FL3737_set_color(i, (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16)*brightness_levels[current_brightness]/100),
-                                (uint8_t)(((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF)*brightness_levels[current_brightness]/100),
-                                (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF)*brightness_levels[current_brightness]/100) );
+        IS31FL3737_set_color(i, 0,
+                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
   }
 }
 
 uint8_t get_led_brightness(void) {
-  return current_brightness;
+  return brightness_levels[current_brightness];
 }
 
 void load_led_pattern(uint8_t current_used_led_pattern) {
