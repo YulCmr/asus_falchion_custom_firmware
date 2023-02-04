@@ -12,6 +12,7 @@ static uint8_t brightness_levels[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
 static uint8_t current_brightness = NUMBER_OF_BRIGHTNESS_SETTINGS-1;
 static uint8_t animation_accent_color_position = 0; //10 is out of scope
 static bool ledbar_animation_flag = true;
+static bool led_matrix_update_is_needed = false;
 
 const uint32_t ledmaps[][DRIVER_LED_TOTAL];
 const bool fn_ledmaps[][DRIVER_LED_TOTAL];
@@ -57,10 +58,17 @@ void disable_caps_lock_led(void) {
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 }
 
+void ask_for_led_matrix_update(void) {
+  led_matrix_update_is_needed = true;
+}
+
 /* Updates led matrix buffer. Needs to be called each time you made some edit in leds and you wants it to be reflected now */
 void update_led_matrix(void) {
   uint8_t current_used_led_pattern = get_led_pattern();
   uint8_t fn_lock_offset;
+
+  /* If no update is needed, return */
+  if(led_matrix_update_is_needed == false) return;
 
   if(current_base_layer() == FNLK_LAYER) {
     fn_lock_offset = 3;
@@ -155,20 +163,23 @@ void load_led_pattern(uint8_t current_used_led_pattern) {
   else if(current_used_led_pattern == 255) current_used_led_pattern = NUMBER_OF_PATTERNS;
   set_led_pattern(current_used_led_pattern);
 
-  update_led_matrix();
+  ask_for_led_matrix_update();
+  //update_led_matrix();
 }
 
 void brightness_decrease(void) {
   if(current_brightness != 0) {
     current_brightness--;
-    update_led_matrix();
+    ask_for_led_matrix_update();
+    //update_led_matrix();
   }
 }
 
 void brightness_increase(void) {
   if(current_brightness < NUMBER_OF_BRIGHTNESS_SETTINGS-1) {
     current_brightness++;
-    update_led_matrix();
+    ask_for_led_matrix_update();
+    //update_led_matrix();
   }
 }
 
@@ -283,7 +294,8 @@ void ledbar_animate(void) {
     /* Reset timestamp */
     start = HAL_GetTick();
 
-    update_led_matrix();
+    ask_for_led_matrix_update();
+    //update_led_matrix();
   }
 }
 
@@ -424,7 +436,7 @@ const uint32_t bar_ledmaps[][9] = {
     )
 };
 
-// DO NOT TOUCH. GPIO MAPPING 
+// DO NOT TOUCH. GPIO MAPPING
 is31_led g_is31_leds[96] = {
   {0, B_1, A_1, C_1},
   {0, B_2, A_2, C_2},

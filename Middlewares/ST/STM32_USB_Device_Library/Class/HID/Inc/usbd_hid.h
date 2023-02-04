@@ -27,14 +27,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include  "usbd_ioreq.h"
 #include "rgb.h"
-/** @addtogroup STM32_USB_DEVICE_LIBRARY
-  * @{
-  */
-
-/** @defgroup USBD_HID
-  * @brief This file is the Header file for usbd_hid.c
-  * @{
-  */
 
 
 /** @defgroup USBD_HID_Exported_Defines
@@ -53,7 +45,7 @@ extern "C" {
 #define USB_HID_CONFIG_DESC_SIZ                    41U
 #define USB_HID_DESC_SIZ                           9U
 #define HID_MOUSE_REPORT_DESC_SIZE                 74U
-#define HID_KEYBOARD_REPORT_DESC_SIZE              102U //78U
+#define HID_KEYBOARD_REPORT_DESC_SIZE              96U //78U
 
 #define HID_DESCRIPTOR_TYPE                        0x21U
 #define HID_REPORT_DESC                            0x22U

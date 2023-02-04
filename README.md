@@ -23,6 +23,7 @@ Obviously, I went with the second option :)
 - [X] First version of key processing
 - [X] Enable LEDs
 - [X] Control LEDs independently + Fancy layouts
+- [ ] Save persistent parameters in eeprom 
 - [ ] Optimize code
 - [ ] Test as much as possible and list remaining bugs
 - [ ] Enjoy keyoard :)  

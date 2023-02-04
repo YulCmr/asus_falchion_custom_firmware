@@ -14,6 +14,7 @@ bool ledbar_animation_is_enabled(void);
 void ledbar_animation_enable(void);
 void ledbar_animation_disable(void);
 void ledbar_animate(void);
+void ask_for_led_matrix_update(void);
 
 void set_gui_lock_led(bool value);
 void enable_gui_lock_led(void);

@@ -119,6 +119,58 @@ change keyboard behaviour on keypresses. Look for required keycode in keyboard.h
 May need some improvement over time to improve readability */
 void process_matrix_event(uint16_t key, bool logic_level) {
   switch(key) {
+    /* ------------ Casual keys ------------ */
+    default :
+      // Simultaneously pressed key processing
+      for(int i = 0; i < MAX_NUMBER_OF_KEYS; i++) {
+        if(!logic_level) {
+          if(matrix_keys[i] == key) {
+            matrix_keys[i] = 0x00;
+            number_of_keys--;
+            keyboard_update_needed = true;
+            return;
+          }
+        }
+        else {
+          if(matrix_keys[i] == 0x00) {
+            matrix_keys[i] = key;
+            number_of_keys++;
+            keyboard_update_needed = true;
+            return;
+          }
+        }
+      }
+      break;
+
+    /* ------------ Modifiers ------------ */
+    case 0xE3 :
+    case 0xE7 :
+      if(gui_active) {
+        if(logic_level) {
+          matrix_modifiers |= 1<<(key-0xE0);
+        }
+        else {
+          matrix_modifiers &= ~(1 << (key-0xE0));
+        }
+        keyboard_update_needed = true;
+      }
+      break;
+
+    case 0xE0 :
+    case 0xE1 :
+    case 0xE2 :
+    case 0xE4 :
+    case 0xE5 :
+    case 0xE6 :
+      if(logic_level) {
+        matrix_modifiers |= 1<<(key-0xE0);
+      }
+      else {
+        matrix_modifiers &= ~(1 << (key-0xE0));
+      }
+      keyboard_update_needed = true;
+      break;
+
     /* ------------ Media keys ------------ */
     case 0x00A8:  // Mute
     case 0x00A9:  // Vol Up
@@ -135,6 +187,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       }
       media_update_needed = true;
       break;
+
     /* RGB animation on/off */
     case 0x7823:
       if(logic_level) {
@@ -150,14 +203,17 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       else {
         macro_layer = 0;
       }
-      update_led_matrix();
+      ask_for_led_matrix_update();
+      //update_led_matrix();
       break;
+
+    /* GUI Lock key */
     case 0x700B:
-    if(logic_level) {
-      gui_active = !gui_active;
-      set_gui_lock_led(gui_active);
-    }
-    break;
+      if(logic_level) {
+        gui_active = !gui_active;
+        set_gui_lock_led(gui_active);
+      }
+      break;
 
     /* ------------ Led Pattern left ------------ */
     case 0x7821:
@@ -166,6 +222,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
         load_led_pattern(--led_pattern);
       }
       break;
+
     /* ------------ Led Pattern right ------------ */
     case 0x7822:
       if(logic_level) {
@@ -173,6 +230,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
         load_led_pattern(++led_pattern);
       }
       break;
+
     /* ------------ Brightness down ------------ */
     case 0x7803:
       if(logic_level) {
@@ -197,67 +255,20 @@ void process_matrix_event(uint16_t key, bool logic_level) {
         /* if Macro layer was active, disable it */
         if(macro_layer != 0) macro_layer = 0;  //disabled for now, may be useless in definitive
       }
-      update_led_matrix();
+      ask_for_led_matrix_update();
+      //update_led_matrix();
       break;
 
     /* ------------  FN Lock ------------*/
     case 0x5260 :
       if(logic_level) {
         base_layer = !base_layer;
-        update_led_matrix();
+        ask_for_led_matrix_update();
+        //update_led_matrix();
       }
       break;
 
-    /* ------------ Modifiers ------------ */
-    case 0xE3 :
-    case 0xE7 :
-      if(gui_active) {
-        if(logic_level) {
-          matrix_modifiers |= 1<<(key-0xE0);
-        }
-        else {
-          matrix_modifiers &= ~(1 << (key-0xE0));
-        }
-        keyboard_update_needed = true;
-      }
-      break;
-    case 0xE0 :
-    case 0xE1 :
-    case 0xE2 :
-    case 0xE4 :
-    case 0xE5 :
-    case 0xE6 :
-      if(logic_level) {
-        matrix_modifiers |= 1<<(key-0xE0);
-      }
-      else {
-        matrix_modifiers &= ~(1 << (key-0xE0));
-      }
-      keyboard_update_needed = true;
-      break;
 
-    /* ------------ Casual keys ------------ */
-    default :
-        // Simultaneously pressed key processing
-        for(int i = 0; i < MAX_NUMBER_OF_KEYS; i++) {
-          if(!logic_level) {
-            if(matrix_keys[i] == key) {
-              matrix_keys[i] = 0x00;
-              number_of_keys--;
-              keyboard_update_needed = true;
-              return;
-            }
-          }
-          else {
-            if(matrix_keys[i] == 0x00) {
-              matrix_keys[i] = key;
-              number_of_keys++;
-              keyboard_update_needed = true;
-              return;
-            }
-          }
-      }
-      break;
   }
 }
 

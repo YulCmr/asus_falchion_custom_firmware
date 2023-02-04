@@ -95,8 +95,9 @@ int main(void)
   while (1)
   {
     scan_matrix();
-    IS31FL3737_update_pwm_buffers(161, 191);
     if(ledbar_animation_is_enabled() == true) ledbar_animate();
+    update_led_matrix();
+    IS31FL3737_update_pwm_buffers(161, 191);
   }
 }
 
