@@ -10,15 +10,291 @@
 
 static uint8_t brightness_levels[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 static uint8_t current_brightness = NUMBER_OF_BRIGHTNESS_SETTINGS-1;
+static uint8_t animation_accent_color_position = 0; //10 is out of scope
+static bool ledbar_animation_flag = true;
 
-//LAYOUT_96_iso(
-//     KC_ESC,   KC_1,     KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,      KC_0,     KC_MINS,   KC_EQL,
-//     KC_TAB,   KC_Q,     KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,      KC_P,     KC_LBRC,   KC_RBRC,
-//     KC_CAPS,  KC_A,     KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,      KC_SCLN,  KC_QUOT,   KC_NONUS_HASH,  KC_ENT,
-//     KC_LSFT,  KC_BSLS,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM,   KC_DOT,   KC_SLSH,                   KC_RSFT,
-//     KC_LCTL,  KC_LWIN,  KC_LALT,                   KC_SPC,                             KC_RALT,   QK_MOMENTARY,        KC_RCTL,        KC_BSPC,
-//     KC_INS,   KC_DEL,            KC_PGUP, KC_PGDN,                                                KC_DOWN,  KC_RGHT,   KC_LEFT,        KC_UP
-// )
+const uint32_t ledmaps[][DRIVER_LED_TOTAL];
+const bool fn_ledmaps[][DRIVER_LED_TOTAL];
+const bool macro_ledmaps[][DRIVER_LED_TOTAL];
+const uint32_t bar_ledmaps[][9];
+const uint32_t bar_animation_accent_color[NUMBER_OF_PATTERNS];
+static uint32_t bar_animation_circular_buffer[9];
+static uint32_t bar_animation_short_buffer[3];
+
+bool ledbar_animation_is_enabled(void) {
+  return ledbar_animation_flag;
+}
+
+void ledbar_animation_enable(void) {
+  ledbar_animation_flag = true;
+}
+
+void ledbar_animation_disable(void) {
+  ledbar_animation_flag = false;
+}
+
+void set_gui_lock_led(bool value) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, value);
+}
+
+void enable_gui_lock_led(void) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+}
+
+void disable_gui_lock_led(void) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+}
+
+void set_caps_lock_led(bool value) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, value);
+}
+
+void enable_caps_lock_led(void) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+}
+
+void disable_caps_lock_led(void) {
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+}
+
+/* Updates led matrix buffer. Needs to be called each time you made some edit in leds and you wants it to be reflected now */
+void update_led_matrix(void) {
+  uint8_t current_used_led_pattern = get_led_pattern();
+  uint8_t fn_lock_offset;
+
+  if(current_base_layer() == FNLK_LAYER) {
+    fn_lock_offset = 3;
+  }
+  else fn_lock_offset = 0;
+
+  for (int i = 0; i < DRIVER_LED_TOTAL-9; i++) {
+      /* If FN Key is pressed down, we will process different color for them
+      See "fn_ledmaps" to check which keys are concerned with this color shift */
+
+      /* Controls color of macro keys while FN+MACRO is held down */
+      if( (macro_layer_is_enabled() == true && (macro_ledmaps[current_base_layer()][i] == true) && function_layer_is_enabled() == true) ) {
+        switch(current_used_led_pattern) {
+          case WHITE:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0xFF,
+                      (uint8_t)0x00,
+                      (uint8_t)0x00);
+              break;
+          case RUST:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0x00,
+                      (uint8_t)0xFF,
+                      (uint8_t)0xFF);
+              break;
+          /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
+          default:
+              IS31FL3737_set_color(i, 1,
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
+              break;
+        }
+      }
+      /* Controls color of function keys while FN is held down */
+      else if( (function_layer_is_enabled() == true && (fn_ledmaps[current_base_layer()][i] == true) && macro_layer_is_enabled() == false) ) {
+        switch(current_used_led_pattern) {
+          case WHITE:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0xFF,
+                      (uint8_t)0x00,
+                      (uint8_t)0x00);
+              break;
+          case RUST:
+              IS31FL3737_set_color(i, 0,
+                      (uint8_t)0x00,
+                      (uint8_t)0xFF,
+                      (uint8_t)0xFF);
+              break;
+          /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
+          default:
+              IS31FL3737_set_color(i, 1,
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
+              break;
+        }
+      }
+      /* Controls color of every other keys except ledbar */
+      else
+        IS31FL3737_set_color(i, 0,
+                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
+                (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
+                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
+  }
+  /* Handles ledbar update */
+  for (int i = 0; i < 9; i++) {
+    if(ledbar_animation_is_enabled()) {
+      IS31FL3737_set_color((i+85), 0,
+              (uint8_t)(bar_animation_circular_buffer[i]>>16),
+              (uint8_t)((bar_animation_circular_buffer[i]>>8)&0xFF),
+              (uint8_t)(bar_animation_circular_buffer[i]&0xFF) );
+    }
+    else {
+      IS31FL3737_set_color((i+85), 0,
+              (uint8_t)(bar_ledmaps[current_used_led_pattern][i]>>16),
+              (uint8_t)((bar_ledmaps[current_used_led_pattern][i]>>8)&0xFF),
+              (uint8_t)(bar_ledmaps[current_used_led_pattern][i]&0xFF) );
+    }
+  }
+}
+
+/* Used in IS31FL3737 to handle brightness levels */
+uint8_t get_led_brightness(void) {
+  return brightness_levels[current_brightness];
+}
+
+/* Used to switch from one led pattern to another */
+void load_led_pattern(uint8_t current_used_led_pattern) {
+  if(current_used_led_pattern > NUMBER_OF_PATTERNS) current_used_led_pattern = 0;
+  /* In case of overflow by 0 */
+  else if(current_used_led_pattern == 255) current_used_led_pattern = NUMBER_OF_PATTERNS;
+  set_led_pattern(current_used_led_pattern);
+
+  update_led_matrix();
+}
+
+void brightness_decrease(void) {
+  if(current_brightness != 0) {
+    current_brightness--;
+    update_led_matrix();
+  }
+}
+
+void brightness_increase(void) {
+  if(current_brightness < NUMBER_OF_BRIGHTNESS_SETTINGS-1) {
+    current_brightness++;
+    update_led_matrix();
+  }
+}
+
+/* Calculates new "frame" for ledbar animation then asks for a driver update */
+void ledbar_animate(void) {
+  uint8_t current_used_led_pattern = get_led_pattern();
+  static uint32_t start = 0;
+  static uint8_t iterations = 0;
+  static uint8_t max_iteration_number = 50; //Increasing this value will slow down animation
+  static uint16_t timeout = 50;
+  static uint16_t r1, g1, b1;
+  static uint16_t r2, g2, b2;
+  static uint16_t r3, g3, b3;
+  static uint16_t r4, g4, b4;
+  static int16_t r_diff, g_diff, b_diff;
+
+  /* Initial condition, do not modify */
+  if(start == 0) {
+    start = HAL_GetTick();
+  }
+
+  /* Gets calls every "timeout" milliseconds, decrease value to accelerate animation */
+  if((HAL_GetTick() - start) > timeout) {
+    for(int i = 0; i < 9; i++) {
+      bar_animation_circular_buffer[i] = bar_ledmaps[current_used_led_pattern][i];
+    }
+
+    /* Load current cell color */
+    r1 = (uint8_t)(bar_ledmaps[current_used_led_pattern][animation_accent_color_position]>>16);
+    g1 = (uint8_t)((bar_ledmaps[current_used_led_pattern][animation_accent_color_position]>>8)&0xFF);
+    b1 = (uint8_t)(bar_ledmaps[current_used_led_pattern][animation_accent_color_position]&0xFF);
+
+    /* Load accent color */
+    r2 = (uint8_t)(bar_animation_accent_color[current_used_led_pattern]>>16);
+    g2 = (uint8_t)((bar_animation_accent_color[current_used_led_pattern]>>8)&0xFF);
+    b2 = (uint8_t)(bar_animation_accent_color[current_used_led_pattern]&0xFF);
+
+    /* Load tail cell color depending on current position */
+    if(animation_accent_color_position == 0) {
+      r3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][7]>>16);
+      g3 = (uint8_t)((bar_ledmaps[current_used_led_pattern][7]>>8)&0xFF);
+      b3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][7]&0xFF);
+    }
+    else if(animation_accent_color_position == 1) {
+      r3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][8]>>16);
+      g3 = (uint8_t)((bar_ledmaps[current_used_led_pattern][8]>>8)&0xFF);
+      b3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][8]&0xFF);
+    }
+    else {
+      r3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][animation_accent_color_position-2]>>16);
+      g3 = (uint8_t)((bar_ledmaps[current_used_led_pattern][animation_accent_color_position-2]>>8)&0xFF);
+      b3 = (uint8_t)(bar_ledmaps[current_used_led_pattern][animation_accent_color_position-2]&0xFF);
+    }
+
+    /* Caculate color gradients */
+    r_diff = (r2 - r1) / max_iteration_number;
+    g_diff = (g2 - g1) / max_iteration_number;
+    b_diff = (b2 - b1) / max_iteration_number;
+
+    r4 = (r1 + (iterations * r_diff));
+    g4 = (g1 + (iterations * g_diff));
+    b4 = (b1 + (iterations * b_diff));
+
+    bar_animation_short_buffer[2] = (r4&0xFF)<<16;
+    bar_animation_short_buffer[2] += (g4&0xFF)<<8;
+    bar_animation_short_buffer[2] += (b4&0xFF);
+
+    bar_animation_short_buffer[1] = bar_animation_accent_color[current_used_led_pattern];
+
+    r_diff = (r3 - r2) / max_iteration_number;
+    g_diff = (g3 - g2) / max_iteration_number;
+    b_diff = (b3 - b2) / max_iteration_number;
+
+    r4 = (r2 + (iterations * r_diff));
+    g4 = (g2 + (iterations * g_diff));
+    b4 = (b2 + (iterations * b_diff));
+
+    bar_animation_short_buffer[0] = (r4&0xFF)<<16;
+    bar_animation_short_buffer[0] += (g4&0xFF)<<8;
+    bar_animation_short_buffer[0] += (b4&0xFF);
+
+    /* copy short buffer in big buffer */
+    bar_animation_circular_buffer[animation_accent_color_position] = bar_animation_short_buffer[2];
+
+    if(animation_accent_color_position == 0) {
+      bar_animation_circular_buffer[8] = bar_animation_short_buffer[1];
+      bar_animation_circular_buffer[7] = bar_animation_short_buffer[0];
+    }
+    else if(animation_accent_color_position == 1) {
+      bar_animation_circular_buffer[0] = bar_animation_short_buffer[1];
+      bar_animation_circular_buffer[8] = bar_animation_short_buffer[0];
+    }
+    else  {
+      bar_animation_circular_buffer[animation_accent_color_position-1] = bar_animation_short_buffer[1];
+      bar_animation_circular_buffer[animation_accent_color_position-2] = bar_animation_short_buffer[0];
+    }
+
+    /* Iterate 50 times to calculate 50 gradient from color A to color B */
+    if(iterations == max_iteration_number) {
+      iterations = 0;
+
+      /* each time we finished a full gradient, roll gradients position */
+      if(animation_accent_color_position == 8) {
+        animation_accent_color_position = 0;
+      }
+      else {
+        animation_accent_color_position++;
+      }
+    }
+    else iterations++;
+
+    /* Reset timestamp */
+    start = HAL_GetTick();
+
+    update_led_matrix();
+  }
+}
+
+
+// [0] = LAYOUT_falchion_iso(
+//     KC_ESC,   KC_1,     KC_2,   KC_3,    KC_4,   KC_5,   KC_6,    KC_7,   KC_8,   KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_INS,
+//     KC_TAB,   KC_Q,     KC_W,   KC_E,    KC_R,   KC_T,   KC_Y,    KC_U,   KC_I,   KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_DEL,
+//     KC_CAPS,  KC_A,     KC_S,   KC_D,    KC_F,   KC_G,   KC_H,    KC_J,   KC_K,   KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,   KC_PGUP,
+//     KC_LSFT,  KC_BSLS,  KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,    KC_N,   KC_M,   KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,    KC_PGDN,
+//     KC_LCTL,  KC_LWIN,  KC_LALT,                 KC_SPC,                          KC_RALT,  KC_FN,    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
+// ),
 
 /* Edit Wisely ... */
 const uint32_t ledmaps[][DRIVER_LED_TOTAL] = {
@@ -68,6 +344,7 @@ const uint32_t ledmaps[][DRIVER_LED_TOTAL] = {
     )
 };
 
+/* True is key has an alternate FN function. x2 because FNLOCK or not*/
 const bool fn_ledmaps[][DRIVER_LED_TOTAL] = {
     [0] = PATTERN_leds(
         0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
@@ -85,6 +362,7 @@ const bool fn_ledmaps[][DRIVER_LED_TOTAL] = {
     )
 };
 
+/* True is key has an alternate MACRO function. x2 because FNLOCK or not*/
 const bool macro_ledmaps[][DRIVER_LED_TOTAL] = {
     [0] = PATTERN_leds(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -102,113 +380,51 @@ const bool macro_ledmaps[][DRIVER_LED_TOTAL] = {
     )
 };
 
-void update_led_matrix(void) {
-  uint8_t current_used_led_pattern = get_led_pattern();
-  uint8_t fn_lock_offset;
+/* Color accent you want in ledbar animation one each led pattern */
+const uint32_t bar_animation_accent_color[NUMBER_OF_PATTERNS] = {
+  0xFF0000,  //Red on  WHITE
+  0xFF024E,  //Pink on MIAMI
+  0x000000   //Off on RUST
+};
 
-  if(current_base_layer() == FNLK_LAYER) {
-    fn_lock_offset = 3;
-  }
-  else fn_lock_offset = 0;
+/* Base color pattern for ledbar on each main pattern */
+const uint32_t bar_ledmaps[][9] = {
+    [WHITE] = PATTERN_bar_led(
+        0xFFFFFF, // (+)
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF,
+        0xFFFFFF  // (-)
+    ),
+    [MIAMI] = PATTERN_bar_led(
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF,
+        0x024EFF
+    ),
+    [RUST] = PATTERN_bar_led(
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000,
+        0x000000
+    )
+};
 
-  for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
-      /* If FN Key is pressed down, we will process different color for them
-      See "fn_ledmaps" to check which keys are concerned with this color shift */
-      if( (macro_layer_is_enabled() == true && (macro_ledmaps[current_base_layer()][i] == true) && function_layer_is_enabled() == true) ) {
-        /* Controls color of macro keys while FN+MACRO is held down */
-        switch(current_used_led_pattern) {
-          case WHITE:
-              IS31FL3737_set_color(i, 0,
-                      (uint8_t)0xFF,
-                      (uint8_t)0x00,
-                      (uint8_t)0x00);
-              break;
-          case RUST:
-              IS31FL3737_set_color(i, 0,
-                      (uint8_t)0x00,
-                      (uint8_t)0xFF,
-                      (uint8_t)0xFF);
-              break;
-          /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
-          default:
-              IS31FL3737_set_color(i, 1,
-                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
-                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
-                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
-              break;
-        }
-      }
-      else if( (function_layer_is_enabled() == true && (fn_ledmaps[current_base_layer()][i] == true) && macro_layer_is_enabled() == false) ) {
-        /* Controls color of function keys while FN is held down */
-        switch(current_used_led_pattern) {
-          case WHITE:
-              IS31FL3737_set_color(i, 0,
-                      (uint8_t)0xFF,
-                      (uint8_t)0x00,
-                      (uint8_t)0x00);
-              break;
-          case RUST:
-              IS31FL3737_set_color(i, 0,
-                      (uint8_t)0x00,
-                      (uint8_t)0xFF,
-                      (uint8_t)0xFF);
-              break;
-          /* Default uses complementary color based on current pattern. Currently buggy depending of brightness. Don't know why ... */
-          default:
-              IS31FL3737_set_color(i, 1,
-                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
-                      (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
-                      (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
-              break;
-        }
-      }
-      else
-        IS31FL3737_set_color(i, 0,
-                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]>>16),
-                (uint8_t)((ledmaps[current_used_led_pattern+fn_lock_offset][i]>>8)&0xFF),
-                (uint8_t)(ledmaps[current_used_led_pattern+fn_lock_offset][i]&0xFF) );
-  }
-}
-
-uint8_t get_led_brightness(void) {
-  return brightness_levels[current_brightness];
-}
-
-void load_led_pattern(uint8_t current_used_led_pattern) {
-  if(current_used_led_pattern > NUMBER_OF_PATTERNS) current_used_led_pattern = 0;
-  /* In case of overflow by 0 */
-  else if(current_used_led_pattern == 255) current_used_led_pattern = NUMBER_OF_PATTERNS;
-  set_led_pattern(current_used_led_pattern);
-
-  update_led_matrix();
-}
-
-void brightness_decrease(void) {
-  if(current_brightness != 0) {
-    current_brightness--;
-    update_led_matrix();
-  }
-}
-
-void brightness_increase(void) {
-  if(current_brightness < NUMBER_OF_BRIGHTNESS_SETTINGS-1) {
-    current_brightness++;
-    update_led_matrix();
-  }
-}
-
-// Led bar = {
-//   93, //(+)
-//   92,
-//   91,
-//   90,
-//   89,
-//   88,
-//   87,
-//   86,
-//   85 //(-)
-// }
-
+// DO NOT TOUCH. GPIO MAPPING 
 is31_led g_is31_leds[96] = {
   {0, B_1, A_1, C_1},
   {0, B_2, A_2, C_2},

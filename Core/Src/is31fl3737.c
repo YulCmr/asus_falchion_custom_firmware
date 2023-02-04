@@ -111,7 +111,7 @@ void IS31FL3737_init(uint8_t addr) {
     // Set PWM on all LEDs to 0
     // No need to setup Breath registers to PWM as that is the default.
     for (int i = 0x00; i <= 0xBF; i++) {
-        IS31FL3737_write_register(addr, i, 0xFF);
+        IS31FL3737_write_register(addr, i, 0x00);
     }
 
     // Unlock the command register.

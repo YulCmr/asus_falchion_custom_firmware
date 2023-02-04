@@ -25,8 +25,6 @@ static uint8_t function_layer;
 static uint8_t macro_layer;
 static bool gui_active = 1;
 
-// Brightness Control
-
 static uint8_t led_pattern = 0;
 
 // Flags to send HID Report only when needed
@@ -37,10 +35,6 @@ static bool keyboard_update_needed = false;
 const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS];
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
-
-// void USBH_HID_EventCallback(USBD_HandleTypeDef *phost) {
-//   brightness_decrease();
-// }
 
 bool current_base_layer(void) {
   return base_layer;
@@ -70,7 +64,7 @@ static void send_matrix(void);
  struct keyboardHID_t {
      uint8_t id;
      uint8_t modifiers;
-     //uint8_t reserved;
+     uint8_t reserved;
      uint8_t key1;
      uint8_t key2;
      uint8_t key3;
@@ -120,10 +114,9 @@ uint16_t rows[MATRIX_ROWS] = {GPIO_PIN_0,
                               GPIO_PIN_5
                             };
 
-// void USBD_HID_EventCallback(USBD_HandleTypeDef *phost) {
-//   brightness_decrease();
-// }
-
+/* Main processing of pressed and depressed key. This is the place you can
+change keyboard behaviour on keypresses. Look for required keycode in keyboard.h
+May need some improvement over time to improve readability */
 void process_matrix_event(uint16_t key, bool logic_level) {
   switch(key) {
     /* ------------ Media keys ------------ */
@@ -142,7 +135,13 @@ void process_matrix_event(uint16_t key, bool logic_level) {
       }
       media_update_needed = true;
       break;
-
+    /* RGB animation on/off */
+    case 0x7823:
+      if(logic_level) {
+        if(ledbar_animation_is_enabled()) ledbar_animation_disable();
+        else ledbar_animation_enable();
+      }
+      break;
     /* Macro key (FN+ALT) */
     case 0x7700:
       if(logic_level) {
@@ -156,6 +155,7 @@ void process_matrix_event(uint16_t key, bool logic_level) {
     case 0x700B:
     if(logic_level) {
       gui_active = !gui_active;
+      set_gui_lock_led(gui_active);
     }
     break;
 
@@ -311,7 +311,6 @@ void scan_matrix(void) {
 }
 
 void send_matrix(void) {
-  uint8_t test;
 
   /* Copy previously processed and stored keys */
   keyboardHID.id = 1;
@@ -329,20 +328,23 @@ void send_matrix(void) {
   /* If needed, send keys on USB */
   if(keyboard_update_needed == true) {
     USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
-    // USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
-    // if(ledsHID.leds_bitfield != 0) brightness_decrease();
     keyboard_update_needed = false;
   }
   if(media_update_needed == true) {
     USBD_HID_SendReport(&hUsbDeviceFS, &mediaHID, sizeof(mediaHID));
-    // USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
-    // if(ledsHID.leds_bitfield != 0) brightness_decrease();
     media_update_needed = false;
   }
+
+  /* Read HID Led report (Doesn't actually uses USB on each cycle,
+  only retrieves a uint8_t which is updated by host in another callback) */
+  USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
+  if(((ledsHID.leds_bitfield>>1)&1) == 0x1) enable_caps_lock_led();
+  else disable_caps_lock_led();
 }
 
 /* Edit Wisely ... */
 const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS] = {
+    // Base & FN LOCK Layouts */
     [0] = LAYOUT_falchion_iso(
         KC_ESC,   KC_1,     KC_2,   KC_3,    KC_4,   KC_5,   KC_6,    KC_7,   KC_8,   KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_INS,
         KC_TAB,   KC_Q,     KC_W,   KC_E,    KC_R,   KC_T,   KC_Y,    KC_U,   KC_I,   KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_DEL,
@@ -357,20 +359,22 @@ const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,  KC_BSLS,  KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,    KC_N,   KC_M,   KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,    KC_PGDN,
         KC_LCTL,  KC_LWIN,  KC_LALT,                 KC_SPC,                          KC_RALT,  KC_FN,    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
+    /* FN Layouts: Basic & FNLOCK */
     [2] = LAYOUT_falchion_iso(
         KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
-        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              RGB_HUI,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
         KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
     [3] = LAYOUT_falchion_iso(
         KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
-        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              RGB_HUI,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
         KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
+    /* Macro layouts : Basic & FNLOCK */
     [4] = LAYOUT_falchion_iso(
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
         KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,              KC_NO,

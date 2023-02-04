@@ -91,6 +91,7 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
 static uint8_t USBD_HID_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
 static uint8_t USBD_HID_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static uint8_t USBD_HID_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
+static uint8_t USBD_HID_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum);
 #ifndef USE_USBD_COMPOSITE
 static uint8_t *USBD_HID_GetFSCfgDesc(uint16_t *length);
 static uint8_t *USBD_HID_GetHSCfgDesc(uint16_t *length);
@@ -113,7 +114,7 @@ USBD_ClassTypeDef USBD_HID =
   NULL,              /* EP0_TxSent */
   NULL,              /* EP0_RxReady */
   USBD_HID_DataIn,   /* DataIn */
-  NULL,              /* DataOut */
+  USBD_HID_DataOut,  /* DataOut */
   NULL,              /* SOF */
   NULL,
   NULL,
@@ -155,9 +156,9 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_E
   USB_DESC_TYPE_INTERFACE,                            /* bDescriptorType: Interface descriptor type */
   0x00,                                               /* bInterfaceNumber: Number of Interface */
   0x00,                                               /* bAlternateSetting: Alternate setting */
-  0x01,                                               /* bNumEndpoints */
+  0x02,                                               /* bNumEndpoints */
   0x03,                                               /* bInterfaceClass: HID */
-  0x00,                                               /* bInterfaceSubClass : 1=BOOT, 0=no boot */
+  0x01,                                               /* bInterfaceSubClass : 1=BOOT, 0=no boot */
   0x01,                                               /* nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse */
   0,                                                  /* iInterface: Index of string descriptor */
   /******************** Descriptor of Joystick Mouse HID ********************/
@@ -181,6 +182,9 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_E
   HID_EPIN_SIZE,                                      /* wMaxPacketSize: 4 Bytes max */
   0x00,
   HID_FS_BINTERVAL,                                   /* bInterval: Polling Interval */
+
+  0x07,                                               /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,                             /* bDescriptorType:*/
   HID_EPOUT_ADDR,                                      /* bEndpointAddress: Endpoint Address (IN) */
   0x03,                                               /* bmAttributes: Interrupt endpoint */
   HID_EPOUT_SIZE,                                      /* wMaxPacketSize: 4 Bytes max */
@@ -282,30 +286,20 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   0x29, 0xE7,        //   Usage Maximum (0xE7)
   0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
 
-  // 0x95, 0x01,        //   Report Count (1)
-  // 0x75, 0x08,        //   Report Size (8)
-  // 0x81, 0x01,        //   Input (Constant) reserved byte(1)
+  0x95, 0x01,        //   Report Count (1)
+  0x75, 0x08,        //   Report Size (8)
+  0x81, 0x01,        //   Input (Constant) reserved byte(1)
 
 
-  // 0x95, 0x05,        //   Report Count (5)
-  // 0x75, 0x01,        //   Report Size (1)
-  // 0x05, 0x08,        //   Usage Page (Page# for LEDs)
-  // 0x19, 0x01,        //   Usage Minimum (1)
-  // 0x29, 0x05,        //   Usage Maximum (5)
-  // 0x91, 0x02,        //   Output (Data, Variable, Absolute), Led report
-  // 0x95, 0x01,        //   Report Count (1)
-  // 0x75, 0x03,        //   Report Size (3)
-  // 0x91, 0x01,        //   Output (Data, Variable, Absolute), Led report padding
-  //
-  // 0x95, 0x05,                    //   REPORT_COUNT (5)
-  // 0x75, 0x01,                    //   REPORT_SIZE (1)
-  // 0x05, 0x08,                    //   USAGE_PAGE (LEDs)
-  // 0x19, 0x01,                    //   USAGE_MINIMUM (Num Lock)
-  // 0x29, 0x05,                    //   USAGE_MAXIMUM (Kana)
-  // 0x91, 0x02,                    //   OUTPUT (Data,Var,Abs)
-  // 0x95, 0x01,                    //   REPORT_COUNT (1)
-  // 0x75, 0x03,                    //   REPORT_SIZE (3)
-  // 0x91, 0x03,                    //   OUTPUT (Cnst,Var,Abs)
+  0x95, 0x05,        //   Report Count (5)
+  0x75, 0x01,        //   Report Size (1)
+  0x05, 0x08,        //   Usage Page (Page# for LEDs)
+  0x19, 0x01,        //   Usage Minimum (1)
+  0x29, 0x05,        //   Usage Maximum (5)
+  0x91, 0x02,        //   Output (Data, Variable, Absolute), Led report
+  0x95, 0x01,        //   Report Count (1)
+  0x75, 0x03,        //   Report Size (3)
+  0x91, 0x01,        //   Output (Data, Variable, Absolute), Led report padding
 
   0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
   0x95, 0x06,        //   Report Count (6)
@@ -346,6 +340,8 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
 };
 
 static uint8_t HIDInEpAdd = HID_EPIN_ADDR;
+static uint8_t HIDOutEpAdd = HID_EPOUT_ADDR;
+static uint8_t rx_buf;
 
 /**
   * @}
@@ -396,6 +392,11 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   /* Open EP IN */
   (void)USBD_LL_OpenEP(pdev, HIDInEpAdd, USBD_EP_TYPE_INTR, HID_EPIN_SIZE);
   pdev->ep_in[HIDInEpAdd & 0xFU].is_used = 1U;
+
+  (void)USBD_LL_OpenEP(pdev, HIDOutEpAdd, USBD_EP_TYPE_INTR, HID_EPOUT_SIZE);
+  pdev->ep_out[HIDOutEpAdd & 0xFU].is_used = 1U;
+
+  (void)USBD_LL_PrepareReceive(pdev, HIDOutEpAdd, &rx_buf, 1);
 
   hhid->state = USBD_HID_IDLE;
 
@@ -602,22 +603,7 @@ uint8_t USBD_HID_SendReport(USBD_HandleTypeDef *pdev, uint8_t *report, uint16_t 
 
 uint8_t USBD_HID_ReceiveReport(USBD_HandleTypeDef *pdev, uint8_t *report, uint16_t len)
 {
-  USBD_HID_HandleTypeDef *hhid = (USBD_HID_HandleTypeDef*)pdev->pClassData;
-
-  if (hhid == NULL)
-  {
-    return (uint8_t)USBD_FAIL;
-  }
-
-
-  if(pdev->dev_state == USBD_STATE_CONFIGURED)
-  {
-    if(hhid->state == USBD_HID_IDLE)
-    {
-        hhid->state = USBD_HID_BUSY;
-        (void)USBD_LL_PrepareReceive(pdev, HID_EPOUT_ADDR, report, len);
-    }
-  }
+  memcpy(report, &rx_buf, 1);
   return (uint8_t)USBD_OK;
 }
 /**
@@ -726,6 +712,14 @@ static uint8_t USBD_HID_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
   return (uint8_t)USBD_OK;
 }
+
+static uint8_t USBD_HID_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum){
+
+    HAL_PCD_EP_Receive(pdev->pData, HIDOutEpAdd, &rx_buf, 1);
+
+    return USBD_OK;
+}
+
 
 #ifndef USE_USBD_COMPOSITE
 /**

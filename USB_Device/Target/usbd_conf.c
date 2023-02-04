@@ -174,7 +174,7 @@ void HAL_PCD_DataOutStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   /* USER CODE BEGIN HAL_PCD_DataOutStageCallback_PreTreatment */
-
+  
   /* USER CODE END HAL_PCD_DataOutStageCallback_PreTreatment */
   USBD_LL_DataOutStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->OUT_ep[epnum].xfer_buff);
   /* USER CODE BEGIN HAL_PCD_DataOutStageCallback_PostTreatment */

@@ -26,7 +26,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include  "usbd_ioreq.h"
-
+#include "rgb.h"
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
@@ -43,17 +43,17 @@ extern "C" {
 #ifndef HID_EPIN_ADDR
 #define HID_EPIN_ADDR                              0x81U
 #endif /* HID_EPIN_ADDR */
-#define HID_EPIN_SIZE                              0x05U
+#define HID_EPIN_SIZE                              0x08U
 
 #ifndef HID_EPOUT_ADDR
-#define HID_EPOUT_ADDR                              0x81U
+#define HID_EPOUT_ADDR                              0x01U
 #endif /* HID_EPIN_ADDR */
-#define HID_EPOUT_SIZE                              0x05U
+#define HID_EPOUT_SIZE                              0x01U
 
-#define USB_HID_CONFIG_DESC_SIZ                    34U
+#define USB_HID_CONFIG_DESC_SIZ                    41U
 #define USB_HID_DESC_SIZ                           9U
 #define HID_MOUSE_REPORT_DESC_SIZE                 74U
-#define HID_KEYBOARD_REPORT_DESC_SIZE              78U //78U
+#define HID_KEYBOARD_REPORT_DESC_SIZE              102U //78U
 
 #define HID_DESCRIPTOR_TYPE                        0x21U
 #define HID_REPORT_DESC                            0x22U

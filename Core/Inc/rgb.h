@@ -10,6 +10,17 @@ uint8_t get_led_brightness(void);
 void brightness_decrease(void);
 void brightness_increase(void);
 void update_led_matrix(void);
+bool ledbar_animation_is_enabled(void);
+void ledbar_animation_enable(void);
+void ledbar_animation_disable(void);
+void ledbar_animate(void);
+
+void set_gui_lock_led(bool value);
+void enable_gui_lock_led(void);
+void disable_gui_lock_led(void);
+void set_caps_lock_led(bool value);
+void enable_caps_lock_led(void);
+void disable_caps_lock_led(void);
 
 /* Reproduces actual keyboard layout */
 
@@ -28,6 +39,20 @@ void update_led_matrix(void);
     K50, K51, K52, K53, K54, K55, K56, K57, K58, K59, XXX, XXX, \
     K60, K61, K62, K63, K64, K65, K66, K67, K68, K69, XXX, XXX, \
     K70, XXX, XXX, XXX, XXX, XXX, XXX, XXX, XXX, XXX, XXX, XXX  \
+}
+
+#define PATTERN_bar_led( \
+    K08, \
+    K07, \
+    K06, \
+    K05, \
+    K04, \
+    K03, \
+    K02, \
+    K01, \
+    K00 \
+) { \
+    K00, K01, K02, K03, K04, K05, K06, K07, K08 \
 }
 
 #endif /* __RGB_H_ */

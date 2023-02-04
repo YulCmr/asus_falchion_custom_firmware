@@ -87,6 +87,8 @@ int main(void)
   IS31FL3737_init(161);
   IS31FL3737_init(191);
 
+  /* First init of LEDs to avoid any weird behaviour on cable plug-in */
+  if(ledbar_animation_is_enabled() == true) ledbar_animate();
   load_led_pattern(get_led_pattern());
 
   /* Infinite loop */
@@ -94,6 +96,7 @@ int main(void)
   {
     scan_matrix();
     IS31FL3737_update_pwm_buffers(161, 191);
+    if(ledbar_animation_is_enabled() == true) ledbar_animate();
   }
 }
 
@@ -209,7 +212,7 @@ static void MX_I2C2_Init(void)
 
   /* USER CODE END I2C2_Init 1 */
   hi2c2.Instance = I2C2;
-  hi2c2.Init.Timing = 0x10B0DCFB;
+  hi2c2.Init.Timing = 0x0040163A; //0x10B0DCFB
   hi2c2.Init.OwnAddress1 = 0;
   hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -235,6 +238,8 @@ static void MX_I2C2_Init(void)
   {
     Error_Handler();
   }
+
+  HAL_I2CEx_EnableFastModePlus(I2C_FASTMODEPLUS_I2C2);
   /* USER CODE BEGIN I2C2_Init 2 */
 
   /* USER CODE END I2C2_Init 2 */
@@ -341,6 +346,7 @@ static void MX_GPIO_Init(void)
                           |row_4_Pin|row_5_Pin, GPIO_PIN_RESET);
 
   HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_SET);
 
   /*Configure GPIO pins : col_13_Pin col_0_Pin col_1_Pin col_2_Pin
                            col_3_Pin col_4_Pin col_5_Pin col_6_Pin
@@ -373,6 +379,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = matrix_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(matrix_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Caps lock & GUI Lock leds */
+  GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(matrix_GPIO_Port, &GPIO_InitStruct);
 
