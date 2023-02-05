@@ -204,6 +204,7 @@ void IS31FL3737_update_pwm_buffers(uint8_t addr1, uint8_t addr2) {
     g_pwm_buffer_update_required = false;
 }
 
+/*I highly doubt this function really works. It is never used. TODO: Check this later */
 void IS31FL3737_update_led_control_registers(uint8_t addr1, uint8_t addr2) {
     if (g_led_control_registers_update_required) {
         // Firstly we need to unlock the command register and select PG0

@@ -36,6 +36,11 @@ const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS];
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
+bool computer_is_suspended(void) {
+  if(hUsbDeviceFS.dev_state == USBD_STATE_SUSPENDED) return true;
+  else return false;
+}
+
 bool current_base_layer(void) {
   return base_layer;
 }
@@ -338,19 +343,28 @@ void send_matrix(void) {
 
   /* If needed, send keys on USB */
   if(keyboard_update_needed == true) {
-    USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
-    keyboard_update_needed = false;
+    if(computer_is_suspended()) {
+      HAL_PCD_ActivateRemoteWakeup(hUsbDeviceFS.pData);
+      HAL_Delay(10);
+      HAL_PCD_DeActivateRemoteWakeup(hUsbDeviceFS.pData);
+    }
+    else {
+      USBD_HID_SendReport(&hUsbDeviceFS, &keyboardHID, sizeof(keyboardHID));
+    }
+      keyboard_update_needed = false;
   }
   if(media_update_needed == true) {
     USBD_HID_SendReport(&hUsbDeviceFS, &mediaHID, sizeof(mediaHID));
     media_update_needed = false;
   }
 
-  /* Read HID Led report (Doesn't actually uses USB on each cycle,
-  only retrieves a uint8_t which is updated by host in another callback) */
-  USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
-  if(((ledsHID.leds_bitfield>>1)&1) == 0x1) enable_caps_lock_led();
-  else disable_caps_lock_led();
+  if(computer_is_suspended() != true) {
+    /* Read HID Led report (Doesn't actually uses USB on each cycle,
+    only retrieves a uint8_t which is updated by host in another callback) */
+    USBD_HID_ReceiveReport(&hUsbDeviceFS, &ledsHID, sizeof(ledsHID));
+    if(((ledsHID.leds_bitfield>>1)&1) == 0x1) enable_caps_lock_led();
+    else disable_caps_lock_led();
+  }
 }
 
 /* Edit Wisely ... */

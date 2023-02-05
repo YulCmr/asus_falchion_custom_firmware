@@ -185,7 +185,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_E
 
   0x07,                                               /* bLength: Endpoint Descriptor size */
   USB_DESC_TYPE_ENDPOINT,                             /* bDescriptorType:*/
-  HID_EPOUT_ADDR,                                      /* bEndpointAddress: Endpoint Address (IN) */
+  HID_EPOUT_ADDR,                                      /* bEndpointAddress: Endpoint Address (OUT) */
   0x03,                                               /* bmAttributes: Interrupt endpoint */
   HID_EPOUT_SIZE,                                      /* wMaxPacketSize: 4 Bytes max */
   0x00,
@@ -226,57 +226,17 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
 };
 #endif /* USE_USBD_COMPOSITE  */
 
-// __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE] __ALIGN_END =
-// {
-//   0x05, 0x01,        /* Usage Page (Generic Desktop Ctrls)     */
-//   0x09, 0x02,        /* Usage (Mouse)                          */
-//   0xA1, 0x01,        /* Collection (Application)               */
-//   0x09, 0x01,        /*   Usage (Pointer)                      */
-//   0xA1, 0x00,        /*   Collection (Physical)                */
-//   0x05, 0x09,        /*     Usage Page (Button)                */
-//   0x19, 0x01,        /*     Usage Minimum (0x01)               */
-//   0x29, 0x03,        /*     Usage Maximum (0x03)               */
-//   0x15, 0x00,        /*     Logical Minimum (0)                */
-//   0x25, 0x01,        /*     Logical Maximum (1)                */
-//   0x95, 0x03,        /*     Report Count (3)                   */
-//   0x75, 0x01,        /*     Report Size (1)                    */
-//   0x81, 0x02,        /*     Input (Data,Var,Abs)               */
-//   0x95, 0x01,        /*     Report Count (1)                   */
-//   0x75, 0x05,        /*     Report Size (5)                    */
-//   0x81, 0x01,        /*     Input (Const,Array,Abs)            */
-//   0x05, 0x01,        /*     Usage Page (Generic Desktop Ctrls) */
-//   0x09, 0x30,        /*     Usage (X)                          */
-//   0x09, 0x31,        /*     Usage (Y)                          */
-//   0x09, 0x38,        /*     Usage (Wheel)                      */
-//   0x15, 0x81,        /*     Logical Minimum (-127)             */
-//   0x25, 0x7F,        /*     Logical Maximum (127)              */
-//   0x75, 0x08,        /*     Report Size (8)                    */
-//   0x95, 0x03,        /*     Report Count (3)                   */
-//   0x81, 0x06,        /*     Input (Data,Var,Rel)               */
-//   0xC0,              /*   End Collection                       */
-//   0x09, 0x3C,        /*   Usage (Motion Wakeup)                */
-//   0x05, 0xFF,        /*   Usage Page (Reserved 0xFF)           */
-//   0x09, 0x01,        /*   Usage (0x01)                         */
-//   0x15, 0x00,        /*   Logical Minimum (0)                  */
-//   0x25, 0x01,        /*   Logical Maximum (1)                  */
-//   0x75, 0x01,        /*   Report Size (1)                      */
-//   0x95, 0x02,        /*   Report Count (2)                     */
-//   0xB1, 0x22,        /*   Feature (Data,Var,Abs,NoWrp)         */
-//   0x75, 0x06,        /*   Report Size (6)                      */
-//   0x95, 0x01,        /*   Report Count (1)                     */
-//   0xB1, 0x01,        /*   Feature (Const,Array,Abs,NoWrp)      */
-//   0xC0               /* End Collection                         */
-// };
-
 /* USB Keyboard Descriptor */
 __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SIZE] __ALIGN_END = {
-  // 78 bytes
+  /* Start of keyboard report - 6 */
   0x05, 0x01,        // Usage Page (Generic Desktop Ctrls)
   0x09, 0x06,        // Usage (Keyboard)
   0xA1, 0x01,        // Collection (Application)
 
+  /* ID - 2 */
   0x85, 0x01,        //   Report ID (1)
 
+  /* Modifiers report - 16 */
   0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
   0x75, 0x01,        //   Report Size (1)
   0x95, 0x08,        //   Report Count (8)
@@ -290,6 +250,7 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   // 0x75, 0x08,        //   Report Size (8)
   // 0x81, 0x01,        //   Input (Constant) reserved byte(1)
 
+  /* Led report - 18 */
   0x95, 0x05,        //   Report Count (5)
   0x75, 0x01,        //   Report Size (1)
   0x05, 0x08,        //   Usage Page (Page# for LEDs)
@@ -300,30 +261,34 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   0x75, 0x03,        //   Report Size (3)
   0x91, 0x01,        //   Output (Data, Variable, Absolute), Led report padding
 
+  /* Keys report - 16 */
   0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
   0x95, 0x06,        //   Report Count (6)
   0x75, 0x08,        //   Report Size (8)
   0x15, 0x00,        //   Logical Minimum (0)
-  0x25, 0x6c,        //   Logical Maximum (100) 100 is not up to date anymore, Goes up to F17
+  0x25, 0x6C,        //   Logical Maximum (100) 100 is not up to date anymore, Goes up to F17
   0x19, 0x00,        //   Usage Minimum (0x00)
-  0x29, 0x65,        //   Usage Maximum (0x65)
+  0x29, 0x6D,        //   Usage Maximum (0x65) now 101
   0x81, 0x00,        //   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+
   0xC0,              // End Collection
 
+  /* Start of media keys report - 6 */
   0x05, 0x0C,        // Usage Page (Consumer)
   0x09, 0x01,        // Usage (Consumer Control)
   0xA1, 0x01,        // Collection (Application)
 
-
+  /* ID - 2 */
   0x85, 0x02,        //   Report ID (2)
 
-
+  /* Size 10 */
   0x05, 0x0C,        //   Usage Page (Consumer)
   0x75, 0x01,        //   Report Size (1)
   0x95, 0x08,        //   Report Count (8)
   0x15, 0x00,        //   Logical Minimum (0)
   0x25, 0x01,        //   Logical Maximum (1)
 
+  /* Media keys report - 18 */
   /* Check for correct order in "store_matrix_event" */
   0x09, 0xE2,        //   Usage (Mute)
   0x09, 0xE9,        //   Usage (Volume Increment)
@@ -333,9 +298,38 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   0x09, 0xB7,        //   Usage (Stop)
   0x09, 0xCD,        //   Usage (Play/Pause)
   0x09, 0xB8,        //   Usage (Eject)
-
   0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-  0xC0              // End Collection
+
+  0xC0,               // End Collection
+
+  /* Start of System sleep report - 6 */
+  // 0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
+  // 0x09, 0x80,        // USAGE (System Control)
+  // 0xA1, 0x01,        // COLLECTION (Application)
+  //
+  // /* ID - 2 */
+  // 0x85, 0x03,        //   Report ID (3)
+  //
+  // /* Size 20 */
+  // 0x75, 0x01,        //   Report Size (1)
+  // 0x95, 0x08,        //   Report Count (8)
+  // 0x15, 0x00,        //   Logical Minimum (0)
+  // 0x25, 0x01,        //   Logical Maximum (1)
+  // // 0x09, 0x81,        //   Standby
+  // // 0x09, 0x82,        //   Sleep
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x09, 0x83,        //   Wakeup
+  // 0x81, 0x06,        //   INPUT (Data,Var,Rel)
+  // // 0x75, 0x06,        //   REPORT_SIZE (6)
+  // // 0x81, 0x01,        //   INPUT (Cnst) Padding
+  //
+  // 0xc0               // END_COLLECTION
 };
 
 static uint8_t HIDInEpAdd = HID_EPIN_ADDR;
@@ -392,6 +386,7 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   (void)USBD_LL_OpenEP(pdev, HIDInEpAdd, USBD_EP_TYPE_INTR, HID_EPIN_SIZE);
   pdev->ep_in[HIDInEpAdd & 0xFU].is_used = 1U;
 
+  /* Open EP OUT */
   (void)USBD_LL_OpenEP(pdev, HIDOutEpAdd, USBD_EP_TYPE_INTR, HID_EPOUT_SIZE);
   pdev->ep_out[HIDOutEpAdd & 0xFU].is_used = 1U;
 

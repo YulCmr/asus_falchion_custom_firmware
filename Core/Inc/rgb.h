@@ -5,6 +5,9 @@
 
 #define NUMBER_OF_PATTERN 3
 
+void matrix_enable(void);
+void matrix_disable(void);
+void matrix_toggle(void);
 void load_led_pattern(uint8_t map_id);
 uint8_t get_led_brightness(void);
 void brightness_decrease(void);

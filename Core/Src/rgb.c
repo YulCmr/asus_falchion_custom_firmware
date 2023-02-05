@@ -22,6 +22,25 @@ const uint32_t bar_animation_accent_color[NUMBER_OF_PATTERNS];
 static uint32_t bar_animation_circular_buffer[9];
 static uint32_t bar_animation_short_buffer[3];
 
+void matrix_enable(void) {
+  if(HAL_GPIO_ReadPin(GPIOB, matrix_Pin) != GPIO_PIN_SET) {
+    HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_SET);
+  }
+}
+
+void matrix_disable(void) {
+  if(HAL_GPIO_ReadPin(GPIOB, matrix_Pin) != GPIO_PIN_RESET) {
+    HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_RESET);
+  }
+}
+
+void matrix_toggle(void) {
+  if(HAL_GPIO_ReadPin(GPIOB, matrix_Pin) == GPIO_PIN_RESET) {
+    HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_SET);
+  }
+  else HAL_GPIO_WritePin(GPIOB, matrix_Pin, GPIO_PIN_RESET);
+}
+
 bool ledbar_animation_is_enabled(void) {
   return ledbar_animation_flag;
 }

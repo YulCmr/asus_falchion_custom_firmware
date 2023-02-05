@@ -45,6 +45,7 @@ static void MX_I2C2_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ICACHE_Init(void);
 
+extern USBD_HandleTypeDef hUsbDeviceFS;
 extern const uint32_t ledmaps[][DRIVER_LED_TOTAL];
 
 /* Private user code ---------------------------------------------------------*/
@@ -94,9 +95,20 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
+    /* Scan key switches matrix */
     scan_matrix();
+
+    /* Disable backlight if computer is suspended */
+    if(computer_is_suspended()) {
+      matrix_disable();
+    }
+    else matrix_enable();
+
+    /* Process animation */
     if(ledbar_animation_is_enabled() == true) ledbar_animate();
+    /* Update matrixes buffer */
     update_led_matrix();
+    /* Send buffers over I2C */
     IS31FL3737_update_pwm_buffers(161, 191);
   }
 }
