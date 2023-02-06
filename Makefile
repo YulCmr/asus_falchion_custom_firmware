@@ -42,6 +42,8 @@ Core/Src/stm32l5xx_hal_msp.c \
 Core/Src/keyboard.c \
 Core/Src/is31fl3737.c \
 Core/Src/rgb.c \
+Core/Src/M24M01RP.c \
+Core/Src/eeprom.c \
 USB_Device/Target/usbd_conf.c \
 USB_Device/App/usb_device.c \
 USB_Device/App/usbd_desc.c \

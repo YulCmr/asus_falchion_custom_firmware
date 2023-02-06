@@ -26,6 +26,10 @@ void set_caps_lock_led(bool value);
 void enable_caps_lock_led(void);
 void disable_caps_lock_led(void);
 
+uint8_t get_led_pattern(void);
+void set_led_pattern(uint8_t pattern);
+void rgb_init(void);
+
 /* Reproduces actual keyboard layout */
 
 #define PATTERN_leds( \

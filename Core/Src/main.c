@@ -78,8 +78,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ICACHE_Init();
-  // MX_I2C1_Init();
+  //MX_ICACHE_Init();
+  MX_I2C1_Init();
   MX_I2C2_Init();
   // MX_USART3_UART_Init();
   MX_USB_Device_Init();
@@ -87,6 +87,8 @@ int main(void)
   /* Init RGB Matrixes */
   IS31FL3737_init(161);
   IS31FL3737_init(191);
+
+  rgb_init();
 
   /* First init of LEDs to avoid any weird behaviour on cable plug-in */
   if(ledbar_animation_is_enabled() == true) ledbar_animate();

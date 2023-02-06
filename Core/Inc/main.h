@@ -40,6 +40,8 @@ extern "C" {
 #include "keyboard.h"
 #include "is31fl3737.h"
 #include "rgb.h"
+#include "M24M01RP.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

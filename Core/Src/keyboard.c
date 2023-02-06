@@ -25,8 +25,6 @@ static uint8_t function_layer;
 static uint8_t macro_layer;
 static bool gui_active = 1;
 
-static uint8_t led_pattern = 0;
-
 // Flags to send HID Report only when needed
 static bool media_update_needed = false;
 static bool keyboard_update_needed = false;
@@ -55,13 +53,7 @@ bool macro_layer_is_enabled(void) {
   else return 0;
 }
 
-uint8_t get_led_pattern(void) {
-  return led_pattern;
-}
 
-void set_led_pattern(uint8_t pattern) {
-  led_pattern = pattern;
-}
 
 static void send_matrix(void);
 
@@ -223,16 +215,16 @@ void process_matrix_event(uint16_t key, bool logic_level) {
     /* ------------ Led Pattern left ------------ */
     case 0x7821:
       if(logic_level) {
-        if(led_pattern != 0)
-        load_led_pattern(--led_pattern);
+        if(get_led_pattern() != 0)
+        load_led_pattern(get_led_pattern()-1);
       }
       break;
 
     /* ------------ Led Pattern right ------------ */
     case 0x7822:
       if(logic_level) {
-        if(led_pattern != NUMBER_OF_PATTERN-1)
-        load_led_pattern(++led_pattern);
+        if(get_led_pattern() != (NUMBER_OF_PATTERN-1))
+        load_led_pattern(get_led_pattern()+1);
       }
       break;
 

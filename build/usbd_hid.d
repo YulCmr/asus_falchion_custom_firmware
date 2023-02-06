@@ -41,6 +41,7 @@ build/usbd_hid.o: \
  Core/Inc/rgb.h Core/Inc/main.h USB_Device/App/usb_device.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  Core/Inc/keyboard.h Core/Inc/is31fl3737.h Core/Inc/rgb.h \
+ Core/Inc/M24M01RP.h Core/Inc/eeprom.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
 Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h:
 Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
@@ -89,4 +90,6 @@ Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
 Core/Inc/keyboard.h:
 Core/Inc/is31fl3737.h:
 Core/Inc/rgb.h:
+Core/Inc/M24M01RP.h:
+Core/Inc/eeprom.h:
 Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:

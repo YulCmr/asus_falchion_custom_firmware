@@ -9,10 +9,11 @@
 #define NUMBER_OF_BRIGHTNESS_SETTINGS 11
 
 static uint8_t brightness_levels[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-static uint8_t current_brightness = NUMBER_OF_BRIGHTNESS_SETTINGS-1;
+static uint8_t current_brightness = NUMBER_OF_BRIGHTNESS_SETTINGS - 1;
 static uint8_t animation_accent_color_position = 0; //10 is out of scope
 static bool ledbar_animation_flag = true;
 static bool led_matrix_update_is_needed = false;
+static uint8_t led_pattern = 0;
 
 const uint32_t ledmaps[][DRIVER_LED_TOTAL];
 const bool fn_ledmaps[][DRIVER_LED_TOTAL];
@@ -21,6 +22,25 @@ const uint32_t bar_ledmaps[][9];
 const uint32_t bar_animation_accent_color[NUMBER_OF_PATTERNS];
 static uint32_t bar_animation_circular_buffer[9];
 static uint32_t bar_animation_short_buffer[3];
+
+void rgb_init(void) {
+  current_brightness = eeprom_read_brightness_level();
+  if(current_brightness > (NUMBER_OF_BRIGHTNESS_SETTINGS - 1)) current_brightness = (NUMBER_OF_BRIGHTNESS_SETTINGS - 1);
+  ledbar_animation_flag = (bool)eeprom_read_animation_status();
+  led_pattern = eeprom_read_current_pattern();
+  if(led_pattern > (NUMBER_OF_PATTERNS - 1)) led_pattern = 0;
+}
+
+uint8_t get_led_pattern(void) {
+  return led_pattern;
+}
+
+void set_led_pattern(uint8_t pattern) {
+  led_pattern = pattern;
+  /* No need to check current data, we won't overwrite the same value over and over,
+  we only end here if value changes so we need to store it anyway */
+  eeprom_store_current_pattern(led_pattern);
+}
 
 void matrix_enable(void) {
   if(HAL_GPIO_ReadPin(GPIOB, matrix_Pin) != GPIO_PIN_SET) {
@@ -47,10 +67,36 @@ bool ledbar_animation_is_enabled(void) {
 
 void ledbar_animation_enable(void) {
   ledbar_animation_flag = true;
+  /* No need to check current data, we won't overwrite the same value over and over,
+  we only end here if value changes so we need to store it anyway */
+  eeprom_store_animation_status((uint8_t)ledbar_animation_flag);
 }
 
 void ledbar_animation_disable(void) {
   ledbar_animation_flag = false;
+  /* No need to check current data, we won't overwrite the same value over and over,
+  we only end here if value changes so we need to store it anyway */
+  eeprom_store_animation_status((uint8_t)ledbar_animation_flag);
+}
+
+void brightness_decrease(void) {
+  if(current_brightness != 0) {
+    current_brightness--;
+    ask_for_led_matrix_update();
+    /* No need to check current data, we won't overwrite the same value over and over,
+    we only end here if value changes so we need to store it anyway */
+    eeprom_store_brightness_level(current_brightness);
+  }
+}
+
+void brightness_increase(void) {
+  if(current_brightness < NUMBER_OF_BRIGHTNESS_SETTINGS-1) {
+    current_brightness++;
+    ask_for_led_matrix_update();
+    /* No need to check current data, we won't overwrite the same value over and over,
+    we only end here if value changes so we need to store it anyway */
+    eeprom_store_brightness_level(current_brightness);
+  }
 }
 
 void set_gui_lock_led(bool value) {
@@ -183,23 +229,6 @@ void load_led_pattern(uint8_t current_used_led_pattern) {
   set_led_pattern(current_used_led_pattern);
 
   ask_for_led_matrix_update();
-  //update_led_matrix();
-}
-
-void brightness_decrease(void) {
-  if(current_brightness != 0) {
-    current_brightness--;
-    ask_for_led_matrix_update();
-    //update_led_matrix();
-  }
-}
-
-void brightness_increase(void) {
-  if(current_brightness < NUMBER_OF_BRIGHTNESS_SETTINGS-1) {
-    current_brightness++;
-    ask_for_led_matrix_update();
-    //update_led_matrix();
-  }
 }
 
 /* Calculates new "frame" for ledbar animation then asks for a driver update */
