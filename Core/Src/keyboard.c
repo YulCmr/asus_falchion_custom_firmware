@@ -61,7 +61,7 @@ static void send_matrix(void);
  struct keyboardHID_t {
      uint8_t id;
      uint8_t modifiers;
-     uint8_t reserved;
+     //uint8_t reserved;
      uint8_t key1;
      uint8_t key2;
      uint8_t key3;

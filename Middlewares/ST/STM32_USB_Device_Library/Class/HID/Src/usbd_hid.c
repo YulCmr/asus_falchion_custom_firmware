@@ -301,35 +301,6 @@ __ALIGN_BEGIN static uint8_t HID_KEYBOARD_ReportDesc[HID_KEYBOARD_REPORT_DESC_SI
   0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
 
   0xC0,               // End Collection
-
-  /* Start of System sleep report - 6 */
-  // 0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
-  // 0x09, 0x80,        // USAGE (System Control)
-  // 0xA1, 0x01,        // COLLECTION (Application)
-  //
-  // /* ID - 2 */
-  // 0x85, 0x03,        //   Report ID (3)
-  //
-  // /* Size 20 */
-  // 0x75, 0x01,        //   Report Size (1)
-  // 0x95, 0x08,        //   Report Count (8)
-  // 0x15, 0x00,        //   Logical Minimum (0)
-  // 0x25, 0x01,        //   Logical Maximum (1)
-  // // 0x09, 0x81,        //   Standby
-  // // 0x09, 0x82,        //   Sleep
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x09, 0x83,        //   Wakeup
-  // 0x81, 0x06,        //   INPUT (Data,Var,Rel)
-  // // 0x75, 0x06,        //   REPORT_SIZE (6)
-  // // 0x81, 0x01,        //   INPUT (Cnst) Padding
-  //
-  // 0xc0               // END_COLLECTION
 };
 
 static uint8_t HIDInEpAdd = HID_EPIN_ADDR;
