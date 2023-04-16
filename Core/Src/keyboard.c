@@ -49,11 +49,13 @@ bool function_layer_is_enabled(void) {
 }
 
 bool macro_layer_is_enabled(void) {
+#ifdef DISABLE_MACRO
+  return 0;
+#else
   if(macro_layer != 0) return 1;
   else return 0;
+#endif
 }
-
-
 
 static void send_matrix(void);
 
@@ -379,17 +381,17 @@ const uint16_t keymap[][MATRIX_ROWS][MATRIX_COLS] = {
     /* FN Layouts: Basic & FNLOCK */
     [2] = LAYOUT_falchion_iso(
         KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
-        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              RGB_HUI,
-        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
-        KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_SCRL,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_HOME,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_END,
+        KC_NO,    GUI_TOG,  KC_LALT,                 KC_NO,                           KC_NO,    KC_FN,    RGB_HUI,  RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
     [3] = LAYOUT_falchion_iso(
         KC_GRV,   KC_F1,    KC_F2,  KC_F3,   KC_F4,  KC_F5,  KC_F6,   KC_F7,  KC_F8,  KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_NO,    KC_FNLK,
-        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              RGB_HUI,
-        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_NO,
-        KC_NO,    GUI_TOG,  QK_MACRO,                KC_NO,                           KC_NO,    KC_FN,    KC_NO,    RGB_MOD,  BL_DOWN,  RGB_RMOD
+        KC_NO,    KC_MPLY,  KC_MSTP,KC_MPRV, KC_MNXT,KC_MUTE,KC_VOLD, KC_VOLU,KC_NO,  KC_NO,    KC_PSCR,  KC_NO,    KC_NO,              KC_SCRL,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_HOME,
+        KC_NO,    KC_NO,    KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    BL_UP,    KC_END,
+        KC_NO,    GUI_TOG,  KC_LALT,                 KC_NO,                           KC_NO,    KC_FN,    RGB_HUI,  RGB_MOD,  BL_DOWN,  RGB_RMOD
     ),
     /* Macro layouts : Basic & FNLOCK */
     [4] = LAYOUT_falchion_iso(

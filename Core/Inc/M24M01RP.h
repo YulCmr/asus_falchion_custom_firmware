@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 #ifndef __M24M01RP_H
 #define __M24M01RP_H
 
@@ -17,6 +16,5 @@
 
 uint32_t i2c_mem_read(uint32_t mem_addr, uint8_t *p_data, uint16_t size);
 uint32_t i2c_mem_write(uint32_t mem_addr, uint8_t *p_data, uint16_t size);
-
 
 #endif /* __M24M01RP_H */

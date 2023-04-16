@@ -26,6 +26,8 @@
 extern "C" {
 #endif
 
+#define DISABLE_MACRO
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l5xx_hal.h"
 

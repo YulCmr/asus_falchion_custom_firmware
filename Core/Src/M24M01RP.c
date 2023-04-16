@@ -1,6 +1,6 @@
 #include "M24M01RP.h"
 
-extern I2C_HandleTypeDef *hi2c1;
+extern I2C_HandleTypeDef hi2c1;
 /**
   * @brief  Read an amount of data in blocking mode from a specific memory address
   * @param[in] mem_addr : internal memory address
@@ -10,7 +10,6 @@ extern I2C_HandleTypeDef *hi2c1;
   */
 uint32_t i2c_mem_read(uint32_t mem_addr, uint8_t *data, uint16_t size)
 {
-    HAL_StatusTypeDef status = HAL_ERROR;
     uint8_t eeprom_addr = EEPROM_ADDR_RD | ((mem_addr & 0x00010000) >> 15); //add A16 to the device select command
     uint16_t tmp_addr = mem_addr & 0x0000FFFF;
 
@@ -36,7 +35,6 @@ uint32_t i2c_mem_read(uint32_t mem_addr, uint8_t *data, uint16_t size)
   */
 uint32_t i2c_mem_write(uint32_t mem_addr, uint8_t *data, uint16_t size)
 {
-    HAL_StatusTypeDef status = HAL_ERROR;
     uint8_t eeprom_addr = EEPROM_ADDR_WR | ((mem_addr & 0x00010000) >> 15); //add A16 to the device select command
     uint16_t tmp_addr = mem_addr & 0x0000FFFF;
 
