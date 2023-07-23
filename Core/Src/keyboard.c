@@ -116,29 +116,38 @@ uint16_t rows[MATRIX_ROWS] = {GPIO_PIN_0,
 /* Main processing of pressed and depressed key. This is the place you can
 change keyboard behaviour on keypresses. Look for required keycode in keyboard.h
 May need some improvement over time to improve readability */
-void process_matrix_event(uint16_t key, bool logic_level) {
+bool process_matrix_event(uint16_t key, bool logic_level) {
   switch(key) {
     /* ------------ Casual keys ------------ */
     default :
       // Simultaneously pressed key processing
-      for(int i = 0; i < MAX_NUMBER_OF_KEYS; i++) {
-        if(!logic_level) {
+
+      //Depressed key processing
+      if(!logic_level) {
+        for(int i = 0; i < MAX_NUMBER_OF_KEYS; i++) {
           if(matrix_keys[i] == key) {
             matrix_keys[i] = 0x00;
             number_of_keys--;
             keyboard_update_needed = true;
-            return;
+            return true;
           }
         }
-        else {
+        // Key not found ? We got a problem here, we may have fetched bad layer.
+        return false;
+      }
+      //Pressed key processing
+      else {
+        for(int i = 0; i < MAX_NUMBER_OF_KEYS; i++) {
           if(matrix_keys[i] == 0x00) {
             matrix_keys[i] = key;
             number_of_keys++;
             keyboard_update_needed = true;
-            return;
+            return true;
           }
         }
+        // We shoulnd't get there. Don't handle for now.
       }
+
       break;
 
     /* ------------ Modifiers ------------ */
@@ -178,11 +187,18 @@ void process_matrix_event(uint16_t key, bool logic_level) {
     case 0x00AC:  // Prev Track
     case 0x00AD:  // Stop
     case 0x00AE:  // Play/Pause
+      //Pressed key processing
       if(logic_level) {
         matrix_medias |= 1<<(key-0xA8);
       }
+      //Depressed key processing
       else {
-        matrix_medias &= ~(1 << (key-0xA8));
+        //Depress only if already pressed
+        if((matrix_medias>>(key-0xA8)) == true) {
+          matrix_medias &= ~(1 << (key-0xA8));
+        }
+        //Return false so we can try on another layer
+        else return false;
       }
       media_update_needed = true;
       break;
@@ -266,9 +282,9 @@ void process_matrix_event(uint16_t key, bool logic_level) {
         //update_led_matrix();
       }
       break;
-
-
   }
+
+  return true;
 }
 
 void scan_matrix(void) {
@@ -308,7 +324,21 @@ void scan_matrix(void) {
           key = keymap[base_layer+function_layer+macro_layer][i][c];
 
           /* Process key event (and store if needed) */
-          process_matrix_event(key, logic_level);
+          if(process_matrix_event(key, logic_level) != true) {
+              //We might have wanted to depress a function key whereas we actually depressed a standard key
+              //Let's try to depress the key from the other instead
+              if(function_layer == 0) {
+                key = keymap[base_layer+2+macro_layer][i][c];
+              }
+              else {
+                key = keymap[base_layer+macro_layer][i][c];
+              }
+
+              if(process_matrix_event(key, logic_level) != true) {
+                //TODO: process this return.
+                //We got here because not of the key we tried to depress was initially pressed.
+              }
+          }
 
           /* Save current matrix state */;
           old_matrix[i] ^= col_mask;
